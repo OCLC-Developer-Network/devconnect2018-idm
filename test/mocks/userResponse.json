@@ -1,0 +1,24 @@
+{
+  "schemas": [
+    "urn:mace:oclc.org:eidm:schema:persona:idmself:20180201"
+  ],
+  "id": "412d947b-144e-4ea4-97f5-fd6593315f17",
+  "email": "coombsk@oclc.org",
+  "name": {
+    "familyName": "Coombs",
+    "givenName": "Karen",
+    "middleName": "",
+    "honorificPrefix": "",
+    "honorificSuffix": ""
+  },
+  "nameInfoCanSelfEdit": false,
+  "oclcPPID": "412d947b-144e-4ea4-97f5-fd6593315f17",
+  "institutionId": "128807",
+  "oclcNamespace": "urn:oclc:platform:127950",
+  "meta": {
+    "resourceType": "Self",
+    "created": "2016-08-22T17:31:09Z",
+    "location": "https://128807.share.worldcat.org/idaas/scim/v2/Me",
+    "version": "\"84e7014d09a931f495b3af089b61ceb7\""
+  }
+}
