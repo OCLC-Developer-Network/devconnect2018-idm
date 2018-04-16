@@ -1,5 +1,5 @@
-# A Beginner's Guide to Working with OCLC APIs
-## OCLC DEVCONNECT 2018: Pre-Conference Workshop
+# Get your early access pass to the new WorldShare Identity Management API
+## OCLC DEVCONNECT 2018
 ### Tutorial Part 2 - Setting Up Your Project & Version Control
 
 1. We're going to use git to control versioning of our code, and host our code repositories on GitHub. First, create an empty repository on [github.com](https://github.com/) for your code.
