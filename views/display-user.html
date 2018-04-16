@@ -1,0 +1,8 @@
+<%- include('header.html') -%>
+<h1>Welcome <%= user.getGivenName()%></h1>
+<div id="user">
+<p>Name: <%= user.getFamilyName()%> <%= user.getGivenName()%></p>
+<p>Email: <%= user.getEmail()%></p>
+<p>ID/Namespace: <%= user.getOclcPPID()%> - <%= user.getOclcNamespace()%></p>
+<p>Institution: <%= user.getInstitutionId()%></p>
+<%- include('footer.html') -%>
