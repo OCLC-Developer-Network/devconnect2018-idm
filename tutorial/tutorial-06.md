@@ -27,8 +27,7 @@ institution: 128807
 "use strict";
 const express = require('express');
 const bodyParser = require('body-parser');
-const Wskey = require("nodeauth/src/wskey");
-const User = require("nodeauth/src/user");
+const nodeauth = require("nodeauth");
 
 const User = require("./user.js")
 const UserError = require("./UserError.js")
@@ -60,7 +59,8 @@ module.exports = app;
     const fs = require('fs');
 
     module.exports = function get_config(environment) {
-        return yaml.load(fs.readFileSync(require('path').resolve(__dirname, '../' + environment + '_config.yml')).toString());
+        let config = fs.readFileSync(require('path').resolve(__dirname, '../' + environment + '_config.yml')).toString();
+        return config;
     };        
     ```
 
@@ -116,7 +116,7 @@ const options = {
         redirectUri: "http://localhost:8000/loggedIn"
     };
 
-const wskey = new Wskey(config['wskey'], config['secret'], options);
+const wskey = new nodeauth.Wskey(config['wskey'], config['secret'], options);
 
 this.accessToken = null;
 ```
