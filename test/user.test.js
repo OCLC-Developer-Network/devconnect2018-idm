@@ -31,7 +31,7 @@ describe('Create user test', () => {
 	  
 	});
 
-describe('Find user tests', () => {
+describe('Get self user tests', () => {
   beforeEach(() => {
 	  moxios.install();
   });
