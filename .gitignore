@@ -3,3 +3,4 @@
 /config.yml
 /prod_config_encrypted.txt
 /dev_config.yml
+/local_dev.js
