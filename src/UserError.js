@@ -8,13 +8,25 @@ module.exports = class UserError {
         	this.request = this.error.request;
         	this.doc = this.error.response.data;
 
-	    	this.message = this.doc.detail;
+        	if (this.doc.message) {
+        		this.message = this.doc.message;
+        		this.detail = this.doc.detail;
+        	} else {
+        		this.message = this.doc.detail;
+        		this.detail = null;
+        	}
           } else if (this.error.request) {
             // The request was made but no response was received
             this.request = this.error.request;
+            
+            this.code = null;
+            this.message = null;
+            this.detail = null;
           } else {
             // Something happened in setting up the request that triggered an Error
+        	this.code = null;  
             this.message = this.error.message;
+            this.detail = null;
           }
 	    
 	    
@@ -28,7 +40,11 @@ module.exports = class UserError {
 	}
 	
 	getMessage(){
-		return this.message
+		return this.message;
+	}
+	
+	getDetail(){
+		return this.detail;
 	}
 
 };
