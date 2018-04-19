@@ -46,14 +46,13 @@ describe('Create Error from Access Token Error test', () => {
 	  it('Sets the Error properties', () => {
         expect(error.error).to.be.an.instanceof(Error);
         expect(error.code).to.equal(401)
-        console.log(error);
-        //expect(error.message).to.equal('Authentication failure. Missing or invalid authorization token.')
+        expect(error.message).to.equal('Authentication failure. Missing or invalid authorization token.')
 	  });
 	  
 	  it('Has functioning getters', () => {
         expect(error.getRequestError()).to.be.an.instanceof(Error);
         expect(error.getCode()).to.equal(401)
-        //expect(error.getMessage()).to.equal('Authentication failure. Missing or invalid authorization token.')
+        expect(error.getMessage()).to.equal('Authentication failure. Missing or invalid authorization token.')
 	  });
 	  
 	});
