@@ -4,16 +4,21 @@ module.exports = class UserError {
         if (this.error.response) {
             // The request was made and the server responded with a status code
             // that falls out of the range of 2xx
-        	this.code = this.error.response.status;
-        	this.request = this.error.request;
-        	this.doc = this.error.response.data;
-
-        	if (this.doc.message) {
-        		this.message = this.doc.message;
-        		this.detail = this.doc.detail;
+        	if (this.error.response.status) {
+        		this.code = this.error.response.status;
         	} else {
+        		this.code = this.error.response.statusCode;
+        	}
+        	
+        	this.request = this.error.request;
+        	if (this.error.response.data){
+        		this.doc = this.error.response.data;
         		this.message = this.doc.detail;
         		this.detail = null;
+        	} else {
+        		this.doc = JSON.parse(this.error.response.body);
+        		this.message = this.doc.message;
+        		this.detail = this.doc.detail;
         	}
           } else if (this.error.request) {
             // The request was made but no response was received

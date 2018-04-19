@@ -22,7 +22,7 @@ module.exports = Object.assign(new Error, {
             "method": "get",
             "url": "https://128807.share.worldcat.org/idaas/scim/v2/Me"
         },
-        "data": {"schemas": ["urn:ietf:params:scim:api:messages:2.0:Error"], "detail": "Authentication failure. Missing or invalid authorization token.", "status": "401"},
+        "data": '{"schemas": ["urn:ietf:params:scim:api:messages:2.0:Error"], "detail": "Authentication failure. Missing or invalid authorization token.", "status": "401"}',
         "status": 401,
         "request": {
             "config": {

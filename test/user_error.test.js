@@ -7,6 +7,7 @@ const error_response = fs.readFileSync(require('path').resolve(__dirname, './moc
 const User = require('../src/User');
 
 const error_mock = require('./mocks/errorMock')
+const accesstoken_error_mock = require('./mocks/accessTokenErrorMock')
 
 describe('Create Error test', () => {
 	var error;
@@ -31,6 +32,32 @@ describe('Create Error test', () => {
 	  });
 	  
 	});
+
+describe('Create Error from Access Token Error test', () => {
+	var error;
+	  before(() => {
+		  	error = new UserError(accesstoken_error_mock);
+		  });
+	  
+	  it('Creates an Error object', () => {
+		  expect(error).to.be.an.instanceof(UserError);
+	  });
+	  
+	  it('Sets the Error properties', () => {
+        expect(error.error).to.be.an.instanceof(Error);
+        expect(error.code).to.equal(401)
+        console.log(error);
+        //expect(error.message).to.equal('Authentication failure. Missing or invalid authorization token.')
+	  });
+	  
+	  it('Has functioning getters', () => {
+        expect(error.getRequestError()).to.be.an.instanceof(Error);
+        expect(error.getCode()).to.equal(401)
+        //expect(error.getMessage()).to.equal('Authentication failure. Missing or invalid authorization token.')
+	  });
+	  
+	});
+
 
 describe('API Error tests', () => {
   beforeEach(() => {
