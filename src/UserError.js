@@ -15,8 +15,12 @@ module.exports = class UserError {
         		this.doc = this.error.response.data;
         		this.message = this.doc.detail;
         		this.detail = null;
-        	} else {
+        	} else if (typeof this.error.response.body === 'string') {
         		this.doc = JSON.parse(this.error.response.body);
+        		this.message = this.doc.message;
+        		this.detail = this.doc.detail;
+        	} else if (this.error.response.body) {
+        		this.doc = this.error.response.body;
         		this.message = this.doc.message;
         		this.detail = this.doc.detail;
         	}
