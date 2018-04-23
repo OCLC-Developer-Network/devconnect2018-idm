@@ -3,13 +3,6 @@ const expect = require('chai').expect;
 let helper = require('./testHelper');
 
 describe("routes", function(){
-  beforeEach(() => {
-	  helper.moxios.install();
-  });
-  
-  afterEach(() => {
-	  helper.moxios.uninstall();
-  });
   describe("#index", function(){
 	    it('It should response the GET method', () => {
 	        return request(helper.app).get("/").then(response => {
@@ -21,18 +14,31 @@ describe("routes", function(){
 });
   
   describe("#myaccount", function(){
-      helper.moxios.stubRequest('https://128807.share.worldcat.org/idaas/scim/v2/Me', {
-          status: 200,
-          responseText: helper.user_response
-        });
 	    it('It should response the GET method', () => {
+	    	helper.moxios.uninstall()
 	        return request(helper.app).get("/myaccount").then(response => {
-	            expect(response.statusCode).to.equal(200)
+	            helper.moxios.withMock(function () {
+	            	helper.moxios.wait(function () {
+	                  let http_request = helper.moxios.requests.mostRecent()
+	                  http_request.respondWith({
+	                    status: 200,
+	                    response: helper.user_response
+	                  }).then(function () {
+	      	            expect(response.statusCode).to.equal(200)
+	    	            expect(response.text).to.have.string("Welcome Karen");
+	    	            expect(response.text).to.have.string("Name: Karen Coombs");
+	    	            expect(response.text).to.have.string("Email: coombsk@oclc.org");
+	    	            expect(response.text).to.have.string("ID/Namespace: 412d947b-144e-4ea4-97f5-fd6593315f17 - urn:oclc:platform:127950");
+	    	            expect(response.text).to.have.string("Institution: 128807");
+	                    done()
+	                  })
+	                })
+	            })
 	        })
 	    });
 	  }); 
   
-  describe.only("#Error", function(){
+  describe("#Error", function(){
 	    it('It should response the GET method', () => {
 	        return request(helper.app).get("/?error=invalid_client_id&error_description=WSKey+is+invalid&http_code=401&state=%2Fmyaccount").then(response => {
 	            expect(response.statusCode).to.equal(200);
@@ -43,14 +49,25 @@ describe("routes", function(){
 	    });
 	  });
   
-  describe("#accessTokenError", function(){
-	  helper.moxios.stubRequest('https://128807.share.worldcat.org/idaas/scim/v2/Me', {
-		  status: 401,
-		  responseText: helper.error_response
-	  });
+  describe("#accessTokenError", function(){	  
 	    it('It should response the GET method', () => {
+	    	helper.moxios.uninstall()
 	        return request(helper.app).get("/myaccount").then(response => {
-	            expect(response.statusCode).to.equal(200)
+	            helper.moxios.withMock(function () {
+	            	helper.moxios.wait(function () {
+	                  let http_request = helper.moxios.requests.mostRecent();
+	                  http_request.respondWith({
+	                    status: 401,
+	                    response: helper.error_response
+	                  }).then(function () {
+	      	            expect(response.statusCode).to.equal(200);
+	    	            expect(response.text).to.have.string("System Error");
+	    	            expect(response.text).to.have.string("Status - 401");
+	    	            expect(response.text).to.have.string("Message - WSKey is invalid");
+	                    done()
+	                  })
+	                })
+	            })
 	        })
 	    });
 });
