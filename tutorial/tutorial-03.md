@@ -32,8 +32,7 @@
     "ejs": "^2.5.7",
     "express": "^4.16.2",
     "js-yaml": "^3.10.0",
-    "nodeauth": "git+https://github.com/OCLC-Developer-Network/oclc-auth-node.git",    
-    "read-yaml": "^1.1.0"
+    "nodeauth": "git+https://github.com/OCLC-Developer-Network/oclc-auth-node.git"
   }
 }
 ```
