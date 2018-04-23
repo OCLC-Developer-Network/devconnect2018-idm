@@ -24,8 +24,7 @@
     "cucumber-mink": "^2.0.0",    
     "mocha": "^5.0.1",
     "moxios": "^0.4.0",
-    "nodemon": "^1.17.1",
-    "serverless": "^1.26.1"
+    "nodemon": "^1.17.1"
   },
   "dependencies": {
     "axios": "^0.17.1",
