@@ -14,7 +14,9 @@
         1. [userResponse](https://raw.githubusercontent.com/OCLC-Developer-Network/devconnect2018-idm/master/tests/mocks/userResponse.json)
         2. [errorMock](https://raw.githubusercontent.com/OCLC-Developer-Network/devconnect2018-idm/master/tests/mocks/errorMock.js)
         3. [errorResponse](https://raw.githubusercontent.com/OCLC-Developer-Network/devconnect2018-idm/master/tests/mocks/errorResponse.json)
-        4. [access_token_response](https://raw.githubusercontent.com/OCLC-Developer-Network/devconnect2018-idm/master/tests/mocks/access_token.json)
+        4. [AccessTokenMock.js](https://raw.githubusercontent.com/OCLC-Developer-Network/devconnect2018-idm/master/tests/mocks/AccessTokenMock.js)
+        5. [AccessTokenMock.js](https://raw.githubusercontent.com/OCLC-Developer-Network/devconnect2018-idm/master/tests/mocks/accessTokenErrorMock.js)
+        6. [access_token_response](https://raw.githubusercontent.com/OCLC-Developer-Network/devconnect2018-idm/master/tests/mocks/access_token.json)
 
 #### Write your first test
 
@@ -416,7 +418,80 @@ npm test
 7. Run tests
 ```bash
 npm test
-```             
+```
+
+### Test that Access Token error can be properly parsed
+1. Add mock for Access token error
+```
+const accesstoken_error_mock = require('./mocks/accessTokenErrorMock')
+```
+
+2. Pass the UserError class the Access Token error mock
+3. Check the object is instantiated
+4. Test the properties are set
+5. Test the getters work
+
+```
+describe('Create Error from Access Token Error test', () => {
+    var error;
+      before(() => {
+            error = new UserError(accesstoken_error_mock);
+          });
+      
+      it('Creates an Error object', () => {
+          expect(error).to.be.an.instanceof(UserError);
+      });
+      
+      it('Sets the Error properties', () => {
+        expect(error.error).to.be.an.instanceof(Error);
+        expect(error.code).to.equal(401)
+        expect(error.message).to.equal('Authentication failure. Missing or invalid authorization token.')
+      });
+      
+      it('Has functioning getters', () => {
+        expect(error.getRequestError()).to.be.an.instanceof(Error);
+        expect(error.getCode()).to.equal(401)
+        expect(error.getMessage()).to.equal('Authentication failure. Missing or invalid authorization token.')
+      });
+      
+    });             
+```
+
+#### Alter UserError Class to handle Access Token errors
+1. Change UserError Class constructor
+```
+this.code = this.error.response.status;
+this.request = this.error.request;
+this.doc = this.error.response.data;
+
+this.message = this.doc.detail;
+```
+
+to
+
+```
+if (this.error.response.status) {
+    this.code = this.error.response.status;
+} else {
+    this.code = this.error.response.statusCode;
+}
+
+this.request = this.error.request;
+if (this.error.response.data){
+    this.doc = this.error.response.data;
+    this.message = this.doc.detail;
+    this.detail = null;
+} else {
+    this.doc = JSON.parse(this.error.response.body);
+    this.message = this.doc.message;
+    this.detail = this.doc.detail;
+}
+```
+            
+2. Run tests
+```bash
+npm test
+```
 
 #### Test that an API error can be properly parsed
 1. Create tests for parsing API errors
