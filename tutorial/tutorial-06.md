@@ -105,9 +105,7 @@ In this case we're the application that anytime this function is called it shoul
 
 1. Open server.js
 2. Add authentication setup
-    1. instantiate user and wskey objects
-    2. create access token variable
-    
+    1. instantiate wskey object with appropriate "options"
 
 ```
 
@@ -129,7 +127,7 @@ const wskey = new nodeauth.Wskey(config['wskey'], config['secret'], options);
         - if present, use it to get a valid Access Token
     4. Check for Authorization code 
         1. if present, use it to get a valid Access Token
-         - if request succeed go on your way
+         - if request succeed, set the Access token as an app variable and go on your way
          - if request fails, render error page template
     5. If none of the above, redirect the user login     
     
