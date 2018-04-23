@@ -11,7 +11,6 @@ describe("routes", function(){
 	        })
 	    });
   });
-});
   
   describe("#myaccount", function(){
 	    it('It should response the GET method', () => {
@@ -47,9 +46,9 @@ describe("routes", function(){
 	            expect(response.text).to.have.string("Message - WSKey is invalid");
 	        })
 	    });
-	  });
+  });
   
-  describe("#accessTokenError", function(){	  
+  describe("#SCIM Error", function(){	  
 	    it('It should response the GET method', () => {
 	    	helper.moxios.uninstall()
 	        return request(helper.app).get("/myaccount").then(response => {
@@ -58,7 +57,7 @@ describe("routes", function(){
 	                  let http_request = helper.moxios.requests.mostRecent();
 	                  http_request.respondWith({
 	                    status: 401,
-	                    response: helper.error_response
+	                    response: helper.response_error
 	                  }).then(function () {
 	      	            expect(response.statusCode).to.equal(200);
 	    	            expect(response.text).to.have.string("System Error");
@@ -70,4 +69,28 @@ describe("routes", function(){
 	            })
 	        })
 	    });
+  });  
+  
+  describe("#accessTokenError", function(){	  
+	    it('It should response the GET method', () => {
+	    	helper.moxios.uninstall()
+	        return request(helper.app).get("/myaccount").then(response => {
+	            helper.moxios.withMock(function () {
+	            	helper.moxios.wait(function () {
+	                  let http_request = helper.moxios.requests.mostRecent();
+	                  http_request.respondWith({
+	                    status: 401,
+	                    response: helper.access_token_error
+	                  }).then(function () {
+	      	            expect(response.statusCode).to.equal(200);
+	    	            expect(response.text).to.have.string("System Error");
+	    	            expect(response.text).to.have.string("Status - 401");
+	    	            expect(response.text).to.have.string("Message - WSKey is invalid");
+	                    done()
+	                  })
+	                })
+	            })
+	        })
+	    });
+  });
 });
