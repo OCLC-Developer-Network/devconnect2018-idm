@@ -118,19 +118,47 @@ const options = {
 
 const wskey = new nodeauth.Wskey(config['wskey'], config['secret'], options);
 
-this.accessToken = null;
 ```
 
 3. Create a function that retrieve an Access token
-    1. Check for an existing valid Access Token
+    1. Check for an error code in the query paramters
+        - if present, render the error page template    
+    2. Check for an existing valid Access Token
         - if present go on your way
-    2. Check for valid Refresh Token 
+    3. Check for valid Refresh Token 
         - if present, use it to get a valid Access Token
-    3. Check for Authorization code 
+    4. Check for Authorization code 
         1. if present, use it to get a valid Access Token
-    4. If none of the above, redirect the user login     
+         - if request succeed go on your way
+         - if request fails, render error page template
+    5. If none of the above, redirect the user login     
     
-```   
+``` 
+    if (req.query['error']){
+        res.render('display-error', {error: req.query['error'], error_message: req.query['error_description'], error_detail: ""});
+    } else if (app.get('accessToken') && app.get('accessToken').getAccessTokenString() && !app.get('accessToken').isExpired()){
+        next()
+    } else if (app.get('accessToken') && !app.get('accessToken').refreshToken.isExpired()) {    
+        app.get('accessToken').refresh();
+        next();
+    } else if (req.query['code']) { 
+        // request an Access Token
+        wskey.getAccessTokenWithAuthCode(req.query['code'], config['institution'], config['institution'])
+            .then(function (accessToken) {
+                app.set('accessToken', accessToken);
+                //redirect to the state parameter
+                let state = decodeURIComponent(req.query['state']);
+                res.redirect(state);
+            })
+            .catch(function (err) {
+                //catch the error
+                let error = new UserError(err);
+                res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
+            })
+    }else { 
+        // redirect to login + state parameter
+        res.redirect(wskey.getLoginURL(config['institution'], config['institution']) + "&state=" + encodeURIComponent(req.originalUrl));
+    }  
 
 ```
 
