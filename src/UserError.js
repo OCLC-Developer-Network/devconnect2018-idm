@@ -31,7 +31,11 @@ module.exports = class UserError {
 	        		this.doc = this.error.response.body;
 	        	}
         		this.message = this.doc.message;
-        		this.detail = this.doc.detail;
+        		if (this.doc.detail) {
+        			this.detail = this.doc.detail;
+        		} else {
+        			this.detail = this.doc.details;
+        		}
         	}
           } else if (this.error.request) {
             // The request was made but no response was received
