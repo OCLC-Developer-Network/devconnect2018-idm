@@ -10,8 +10,7 @@
 	3. OCLC's [Node Authentication Library](https://github.com/OCLC-Developer-Network/oclc-auth-node) to support web service authentication
 	4. Dependency management via [NPM](https://www.npmjs.com)
 	5. Unit testing via [Mocha](https://mochajs.org/) and [Chai](http://www.chaijs.com/)
-	6. Behavior-driven testing via [Jasmine](https://jasmine.github.io/)
-	7. Continuous integration testing via [Travis CI](https://travis-ci.org/)
+	6. Behavior-driven testing via [Cucumber-JS](https://github.com/cucumber/cucumber-js)
 
 **[on to Part 2](tutorial-02.md)**
 

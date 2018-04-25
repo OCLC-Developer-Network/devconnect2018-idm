@@ -14,8 +14,8 @@ In a Terminal Window
 
 ```bash
 $ cd {yourGitHomeDirectory}
-$ git clone https://github.com/OCLC-Developer-Network/devnet2018-scim.git
-$ cd devnet2018-scim
+$ git clone https://github.com/OCLC-Developer-Network/devnet2018-idm.git
+$ cd devnet2018-idm
 ```
 
 ### Step 2: Use npm to install the dependencies
@@ -58,5 +58,5 @@ $ npm tests
 
 ## How this was built
 
-For a step by step tutorial on this application see the [tutorial section](https://github.com/OCLC-Developer-Network/devnet2018-scim/tree/master/tutorial)
+For a step by step tutorial on this application see the [tutorial section](https://github.com/OCLC-Developer-Network/devnet2018-idm/tree/master/tutorial)
 
