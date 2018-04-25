@@ -8,6 +8,7 @@ let app = require('../src/server');
 app.set('accessToken', accessToken)
 
 exports.moxios = require('moxios');
+exports.nock = require('nock');
 exports.user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/userResponse.json')).toString();
 exports.error_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/errorResponse.json')).toString();
 exports.access_token_error = fs.readFileSync(require('path').resolve(__dirname, './mocks/access_token_error.json')).toString();
