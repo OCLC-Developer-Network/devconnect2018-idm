@@ -12,15 +12,24 @@ module.exports = class UserError {
         	
         	this.request = this.error.request;
         	if (this.error.response.data){
-        		this.doc = this.error.response.data;
-        		this.message = this.doc.detail;
-        		this.detail = null;
-        	} else if (typeof this.error.response.body === 'string') {
-        		this.doc = JSON.parse(this.error.response.body);
-        		this.message = this.doc.message;
-        		this.detail = this.doc.detail;
-        	} else if (this.error.response.body) {
-        		this.doc = this.error.response.body;
+        		if (typeof this.error.response.data === 'string') {
+        			this.doc = JSON.parse(this.error.response.data);
+	        	} else {
+	        		this.doc = this.error.response.data;
+	        	}
+        		if (this.doc.message){
+        			this.message = this.doc.message;
+        			this.detail = this.doc.details;
+        		} else {
+        			this.message = this.doc.detail;
+        			this.detail = null;
+        		}
+        	} else {
+        		if (typeof this.error.response.body === 'string') {
+        			this.doc = JSON.parse(this.error.response.body);
+	        	} else {
+	        		this.doc = this.error.response.body;
+	        	}
         		this.message = this.doc.message;
         		this.detail = this.doc.detail;
         	}
@@ -37,8 +46,6 @@ module.exports = class UserError {
             this.message = this.error.message;
             this.detail = null;
           }
-	    
-	    
     }
 	getRequestError(){
 		return this.error;
