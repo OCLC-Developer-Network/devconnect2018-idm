@@ -15,9 +15,9 @@ describe('Create user test', () => {
 		  expect(my_user).to.be.an.instanceof(User);
 	  });
 	  
-//	  it('Sets the User properties', () => {
-//        expect(my_user.doc).to.be.an.instanceof(object);
-//	  });
+	  it('Sets the User properties', () => {
+		  expect(my_user.doc).to.be.an("object");
+	  });
 	  
 	  it('Has functioning getters', () => {
         expect(my_user.getFamilyName()).to.equal('Coombs');
