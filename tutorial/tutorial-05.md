@@ -32,12 +32,10 @@ const user_response = fs.readFileSync(require('path').resolve(__dirname, './mock
 
 ``` 
 
-3. Write for Test creating a Bib
+3. Write for Test creating a User
     1. Create a new User object
-        a. load API response
-        b. parse out MARC record
-        c. create a new Bib from MARC
-    2. Test that it is an instance of a Bib object
+        a. load API response as JSON
+    2. Test that it is an instance of a User object
     
 ```
 describe('Create user test', () => {
