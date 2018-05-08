@@ -4,6 +4,8 @@ const fs = require('fs');
 
 const User = require('../src/User');
 const user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/userResponse.json')).toString();
+const single_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/readUserResponse.json')).toString();
+const search_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/searchResponse.json')).toString();
 
 describe('Create user test', () => {
 	let my_user;
@@ -61,3 +63,65 @@ describe('Get self user tests', () => {
       });
   });
 });
+
+describe('Find user tests', () => {
+	  beforeEach(() => {
+		  moxios.install();
+	  });
+	  
+	  afterEach(() => {
+		  moxios.uninstall();
+	  });
+
+	  it('Get user by Access Token', () => {
+	      moxios.stubRequest('https://128807.share.worldcat.org/idaas/scim/v2/Users/412d947b-144e-4ea4-97f5-fd6593315f17', {
+	          status: 200,
+	          responseText: single_user_response
+	        });  
+	    return User.find("412d947b-144e-4ea4-97f5-fd6593315f17", 128807, 'tk_12345')
+	      .then(response => {
+	        //expect an user object back
+	    	expect(response).to.be.an.instanceof(User);
+
+	        expect(response.getFamilyName()).to.equal('Coombs');
+	        expect(response.getGivenName()).to.equal('Karen');
+	        expect(response.getMiddleName()).to.equal('');
+	        expect(response.getEmail()).to.equal("coombsk@oclc.org");
+	        expect(response.getOclcPPID()).to.equal("412d947b-144e-4ea4-97f5-fd6593315f17");
+	        expect(response.getInstitutionId()).to.equal("128807");
+	        expect(response.getOclcNamespace()).to.equal("urn:oclc:platform:127950");
+
+	      });
+	  });
+	});
+
+describe('Search user tests', () => {
+	  beforeEach(() => {
+		  moxios.install();
+	  });
+	  
+	  afterEach(() => {
+		  moxios.uninstall();
+	  });
+
+	  it('Get user by Access Token', () => {
+	      moxios.stubRequest('https://128807.share.worldcat.org/idaas/scim/v2/Users/.search', {
+	          status: 200,
+	          responseText: search_user_response
+	        });  
+	    return User.search("412d947b-144e-4ea4-97f5-fd6593315f17", 128807, 'tk_12345')
+	      .then(response => {
+	        //expect an user object back
+	    	expect(response).to.be.an.instanceof(User);
+
+	        expect(response.getFamilyName()).to.equal('Coombs');
+	        expect(response.getGivenName()).to.equal('Karen');
+	        expect(response.getMiddleName()).to.equal('');
+	        expect(response.getEmail()).to.equal("coombsk@oclc.org");
+	        expect(response.getOclcPPID()).to.equal("412d947b-144e-4ea4-97f5-fd6593315f17");
+	        expect(response.getInstitutionId()).to.equal("128807");
+	        expect(response.getOclcNamespace()).to.equal("urn:oclc:platform:127950");
+
+	      });
+	  });
+	});

@@ -36,6 +36,27 @@ module.exports = class User {
     getOclcNamespace() {
     	return this.doc.oclcNamespace;
     }	
+
+    static find(id, institution, accessToken) {
+    	var config = {
+    			  headers: {
+    				  'Authorization': 'Bearer ' + accessToken,
+    				  'User-Agent': 'node.js KAC client'
+    			  }
+    			};
+    	
+    	let url = 'https://' + institution + serviceUrl + '/Users/' + id;
+        return new Promise(function (resolve, reject) {
+            axios.get(url, config)
+          		.then(response => {
+          			// parse out the User
+        			resolve(new User(response.data));	    	
+          	    })
+          		.catch (error => {
+          			reject(new UserError(error));
+          		});
+        });
+    }
     
     static self(institution, accessToken) {
     	var config = {
