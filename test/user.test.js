@@ -74,11 +74,11 @@ describe('Find user tests', () => {
 	  });
 
 	  it('Get user by Access Token', () => {
-	      moxios.stubRequest('https://128807.share.worldcat.org/idaas/scim/v2/Users/412d947b-144e-4ea4-97f5-fd6593315f17', {
+	      moxios.stubRequest('https://128807.share.worldcat.org/idaas/scim/v2/Users/1671151d-ac48-4b4d-a204-c858c3bf5d86', {
 	          status: 200,
 	          responseText: single_user_response
 	        });  
-	    return User.find("412d947b-144e-4ea4-97f5-fd6593315f17", 128807, 'tk_12345')
+	    return User.find("1671151d-ac48-4b4d-a204-c858c3bf5d86", 128807, 'tk_12345')
 	      .then(response => {
 	        //expect an user object back
 	    	expect(response).to.be.an.instanceof(User);
@@ -87,15 +87,23 @@ describe('Find user tests', () => {
 	        expect(response.getGivenName()).to.equal('Karen');
 	        expect(response.getMiddleName()).to.equal('');
 	        expect(response.getEmail()).to.equal("coombsk@oclc.org");
-	        expect(response.getOclcPPID()).to.equal("412d947b-144e-4ea4-97f5-fd6593315f17");
+	        expect(response.getOclcPPID()).to.equal("1671151d-ac48-4b4d-a204-c858c3bf5d86");
 	        expect(response.getInstitutionId()).to.equal("128807");
-	        expect(response.getOclcNamespace()).to.equal("urn:oclc:platform:127950");
+	        expect(response.getOclcNamespace()).to.equal("urn:oclc:platform:128807");
+	        expect(response.getExternalID()).to.equal("2200998");
+	        expect(response.getUserName()).to.equal("NOT SUPPORTED");
+	        expect(response.getEmails()).to.be.an("array");
+	        expect(response.getAddresses()).to.be.an("array");
+	        expect(response.getCircInfo().barcode).to.equal("2200998");
+	        expect(response.getILLInfo().illId).to.equal("2200998");
+	        expect(response.getCorrelationInfo()).to.be.an("array");
+	        expect(response.getCorrelationInfo()[0].idAtSource).to.equal("069cc81f-395d-4272-86f2-99b54d8fbc29");
 
 	      });
 	  });
 	});
 
-describe('Search user tests', () => {
+describe.only('Search user tests', () => {
 	  beforeEach(() => {
 		  moxios.install();
 	  });
@@ -105,22 +113,31 @@ describe('Search user tests', () => {
 	  });
 
 	  it('Get user by Access Token', () => {
-	      moxios.stubRequest('https://128807.share.worldcat.org/idaas/scim/v2/Users/.search', {
+	      moxios.stubOnce('POST', 'https://128807.share.worldcat.org/idaas/scim/v2/Users/.search', {
 	          status: 200,
 	          responseText: search_user_response
 	        });  
-	    return User.search("412d947b-144e-4ea4-97f5-fd6593315f17", 128807, 'tk_12345')
+	    return User.search("External_ID", "2200998", 128807, 'tk_12345')
 	      .then(response => {
 	        //expect an user object back
-	    	expect(response).to.be.an.instanceof(User);
+	    	expect(response).to.be.an("array");
+	    	expect(response[0]).to.be.an.instanceof(User);
 
-	        expect(response.getFamilyName()).to.equal('Coombs');
-	        expect(response.getGivenName()).to.equal('Karen');
-	        expect(response.getMiddleName()).to.equal('');
-	        expect(response.getEmail()).to.equal("coombsk@oclc.org");
-	        expect(response.getOclcPPID()).to.equal("412d947b-144e-4ea4-97f5-fd6593315f17");
-	        expect(response.getInstitutionId()).to.equal("128807");
-	        expect(response.getOclcNamespace()).to.equal("urn:oclc:platform:127950");
+	        expect(response[0].getFamilyName()).to.equal('Coombs');
+	        expect(response[0].getGivenName()).to.equal('Karen');
+	        expect(response[0].getMiddleName()).to.equal('');
+	        expect(response[0].getEmail()).to.equal("coombsk@oclc.org");
+	        expect(response[0].getOclcPPID()).to.equal("1671151d-ac48-4b4d-a204-c858c3bf5d86");
+	        expect(response[0].getInstitutionId()).to.equal("128807");
+	        expect(response[0].getOclcNamespace()).to.equal("urn:oclc:platform:128807");
+	        expect(response[0].getExternalID()).to.equal("2200998");
+	        expect(response[0].getUserName()).to.equal("NOT SUPPORTED");
+	        expect(response[0].getEmails()).to.be.an("array");
+	        expect(response[0].getAddresses()).to.be.an("array");
+	        expect(response[0].getCircInfo().barcode).to.equal("2200998");
+	        expect(response[0].getILLInfo().illId).to.equal("2200998");
+	        expect(response[0].getCorrelationInfo()).to.be.an("array");
+	        expect(response[0].getCorrelationInfo()[0].idAtSource).to.equal("069cc81f-395d-4272-86f2-99b54d8fbc29");
 
 	      });
 	  });

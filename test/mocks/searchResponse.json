@@ -14,7 +14,7 @@
         "urn:mace:oclc.org:eidm:schema:persona:wmscircpatroninfo:20180101",
         "urn:mace:oclc.org:eidm:schema:persona:wsillinfo:20180101"
       ],
-      "id": "0c33fbd6-0032-4a12-a1c1-b5e4ac9ba592",
+      "id": "1671151d-ac48-4b4d-a204-c858c3bf5d86",
       "externalId": "2200998",
       "userName": "NOT SUPPORTED",
       "name": {
@@ -50,9 +50,9 @@
         ]
       },
       "urn:mace:oclc.org:eidm:schema:persona:persona:20180305": {
-        "oclcPPID": "0c33fbd6-0032-4a12-a1c1-b5e4ac9ba592",
+        "oclcPPID": "1671151d-ac48-4b4d-a204-c858c3bf5d86",
         "institutionId": "128807",
-        "oclcNamespace": "urn:oclc:platform:6569",
+        "oclcNamespace": "urn:oclc:platform:128807",
         "oclcUsername": "2200998",
         "gender": "UNKNOWN",
         "nameInfoCanSelfEdit": false
@@ -82,7 +82,7 @@
       "meta": {
         "resourceType": "User",
         "created": "2016-08-22T17:31:09Z",
-        "location": "https://128807.share.worldcat-m1.dev.oclc.org/idaas/scim/v2/Users/0c33fbd6-0032-4a12-a1c1-b5e4ac9ba592"
+        "location": "https://128807.share.worldcat-m1.dev.oclc.org/idaas/scim/v2/Users/1671151d-ac48-4b4d-a204-c858c3bf5d86"
       }
     }
   ]
