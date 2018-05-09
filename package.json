@@ -5,10 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "nodemon local.js",
-    "deploy": "serverless deploy",
     "test": "mocha",
-    "test_server": "nodemon test.js",
-    "cucumber_tests": "cucumber-js test/features"
+    "test_server": "nodemon test.js"
   },
   "keywords": [],
   "author": "",
@@ -17,18 +15,16 @@
     "chai": "^4.1.2",
     "cheerio": "^1.0.0-rc.2",
     "cucumber": "^4.0.0",
-    "cucumber-mink": "^2.0.0",
     "mocha": "^5.1.1",
     "moxios": "^0.4.0",
     "nock": "^9.2.5",
-    "nodemon": "^1.17.1",
-    "serverless": "^1.26.1",
+    "nodemon": "^1.17.4",
     "supertest": "^3.0.0"
   },
   "dependencies": {
     "axios": "^0.17.1",
     "body-parser": "^1.18.2",
-    "ejs": "^2.5.9",
+    "ejs": "^2.6.1",
     "express": "^4.16.2",
     "js-yaml": "^3.10.0",
     "nodeauth": "git+https://github.com/OCLC-Developer-Network/oclc-auth-node.git",
