@@ -8,7 +8,7 @@ const User = require("./User.js")
 const UserError = require("./UserError.js")
 
 const options = {
-	    services: ["SCIM:read_self", "refresh_token"],
+	    services: ["SCIM", "refresh_token"],
 	    redirectUri: "http://localhost:8000/myaccount"
 	};
 
@@ -33,7 +33,7 @@ function getAccessToken (req, res, next){
         next();
 	} else if (req.query['code']) {	
 		// request an Access Token
-		wskey.getAccessTokenWithAuthCode(req.query['code'], config['institution'], config['institution'])
+		wskey.getAccessTokenWithAuthCode(req.query['code'], config['institution'], config['cxt_institution'])
 	        .then(function (accessToken) {
 	        	app.set('accessToken', accessToken);
 	            //redirect to the state parameter
@@ -47,7 +47,7 @@ function getAccessToken (req, res, next){
 	        })
 	}else {	
 		// redirect to login + state parameter
-		res.redirect(wskey.getLoginURL(config['institution'], config['institution']) + "&state=" + encodeURIComponent(req.originalUrl));
+		res.redirect(wskey.getLoginURL(config['institution'], config['cxt_institution']) + "&state=" + encodeURIComponent(req.originalUrl));
 	}
 }
 
@@ -61,6 +61,32 @@ app.get('/', (req, res) => {
  
 app.get('/myaccount', (req, res) => {   
 	User.self(config['institution'], app.get('accessToken').getAccessTokenString())
+	.then(user => {
+		res.render('display-my-account', {user: user});
+	})
+	.catch (error => {
+		res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
+	})
+});
+
+app.get('/search', (req, res) => {   
+	res.render('search-form');
+});
+
+app.post('/search', (req, res) => {   
+	let query = req.body.query;
+	User.search("ExternalID", query, config['cxt_institution'], app.get('accessToken').getAccessTokenString())
+	.then(user => {
+		res.render('display-user', {user: user});
+	})
+	.catch (error => {
+		res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
+	})
+});
+
+app.get('/user/:id', (req, res) => {
+	let id = req.params['id'];
+	User.find(id, config['cxt_institution'], app.get('accessToken').getAccessTokenString())
 	.then(user => {
 		res.render('display-user', {user: user});
 	})
