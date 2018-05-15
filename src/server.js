@@ -24,8 +24,29 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
 
 function getAccessToken (req, res, next){
+	let cxt_institution;
+	if (req.body.institution){
+		cxt_institution = req.body.institution;
+	} else if (req.originalUrl === "/myaccount") {
+		cxt_institution = config['institution'];
+	} else {
+		cxt_institution = config['cxt_institution'];
+	}
+	
 	if (req.query['error']){
 		res.render('display-error', {error: req.query['error'], error_message: req.query['error_description'], error_detail: ""});
+	} else if (app.get('accessToken') && app.get('accessToken').getContextInstitutionID() !== cxt_institution){
+		// make a CCG request for a token with the right cxt_institution
+		wskey.getAccessTokenWithClientCredentials(config['institution'], cxt_institution, app.get('accessToken').getUser())
+        .then(function (accessToken) {
+        	app.set('accessToken', accessToken);
+            next();
+        })
+        .catch(function (err) {
+            //catch the error
+        	let error = new UserError(err);
+        	res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
+        })
 	} else if (app.get('accessToken') && app.get('accessToken').getAccessTokenString() && !app.get('accessToken').isExpired()){
 		next()
 	} else if (app.get('accessToken') && !app.get('accessToken').refreshToken.isExpired()) {	
@@ -33,7 +54,7 @@ function getAccessToken (req, res, next){
         next();
 	} else if (req.query['code']) {	
 		// request an Access Token
-		wskey.getAccessTokenWithAuthCode(req.query['code'], config['institution'], config['cxt_institution'])
+		wskey.getAccessTokenWithAuthCode(req.query['code'], config['institution'], cxt_institution)
 	        .then(function (accessToken) {
 	        	app.set('accessToken', accessToken);
 	            //redirect to the state parameter
@@ -47,7 +68,8 @@ function getAccessToken (req, res, next){
 	        })
 	}else {	
 		// redirect to login + state parameter
-		res.redirect(wskey.getLoginURL(config['institution'], config['cxt_institution']) + "&state=" + encodeURIComponent(req.originalUrl));
+		let loginURL = wskey.getLoginURL(config['institution'], cxt_institution, encodeURIComponent(req.originalUrl));
+		res.redirect(loginURL);
 	}
 }
 
@@ -73,9 +95,26 @@ app.get('/search', (req, res) => {
 	res.render('search-form');
 });
 
-app.post('/search', (req, res) => {   
+app.post('/search', (req, res) => {
+	let cxt_institution = req.body.institution;
 	let query = req.body.query;
-	User.search("ExternalID", query, config['cxt_institution'], app.get('accessToken').getAccessTokenString())
+	User.search("ExternalID", query, cxt_institution, app.get('accessToken').getAccessTokenString())
+	.then(user => {
+		res.render('display-user', {user: user});
+	})
+	.catch (error => {
+		res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
+	})
+});
+
+app.get('/user', (req, res) => {
+	res.render('lookup-form');
+});
+
+app.post('/user', (req, res) => {
+	let cxt_institution = req.body.institution;
+	let id = req.body.id;
+	User.find(id, cxt_institution, app.get('accessToken').getAccessTokenString())
 	.then(user => {
 		res.render('display-user', {user: user});
 	})
