@@ -13,7 +13,7 @@ describe("Unauthenticated routes", function(){
 	  it('It should response the GET method', async() => {
 	    	let response = await request(app).get("/");
             expect(response.statusCode).to.equal(302);
-            expect(response.headers['location']).to.equal("https://authn.sd00.worldcat.org/oauth2/authorizeCode?client_id=test&authenticatingInstitutionId=128807&contextInstitutionId=128807&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fmyaccount&response_type=code&scope=SCIM%3Aread_self%20refresh_token&state=%2F");
+            expect(response.headers['location']).to.equal("https://authn.sd00.worldcat.org/oauth2/authorizeCode?client_id=test&authenticatingInstitutionId=128807&contextInstitutionId=128807&redirect_uri=http%3A%2F%2Flocalhost%3A8000%2Fmyaccount&response_type=code&scope=SCIM%20refresh_token&state=%2F");
 	    });
   });	
 	
