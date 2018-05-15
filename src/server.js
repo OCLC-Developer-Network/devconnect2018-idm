@@ -119,6 +119,7 @@ app.post('/user', (req, res) => {
 		res.render('display-user', {user: user});
 	})
 	.catch (error => {
+		console.log(error);
 		res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
 	})
 });
