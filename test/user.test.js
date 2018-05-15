@@ -4,8 +4,10 @@ const fs = require('fs');
 
 const User = require('../src/User');
 const user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/userResponse.json')).toString();
-const single_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/createUserResponse.json')).toString();
+const single_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/readUserResponse.json')).toString();
 const search_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/searchResponse.json')).toString();
+const create_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/createUserResponse.json')).toString();
+const update_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/updateUserResponse.json')).toString();
 
 describe('Create user test', () => {
 	let my_user;
@@ -33,7 +35,7 @@ describe('Create user test', () => {
 	  
 	});
 
-describe('Get self user tests', () => {
+describe.skip('Get self user tests', () => {
   beforeEach(() => {
 	  moxios.install();
   });
@@ -42,16 +44,17 @@ describe('Get self user tests', () => {
 	  moxios.uninstall();
   });
 
-  it('Get user by Access Token', () => {
-      moxios.stubRequest('https://128807.share.worldcat.org/idaas/scim/v2/Me', {
+  it('Get self by Access Token', () => {
+      moxios.stubOnce('GET', 'https://128807.share.worldcat.org/idaas/scim/v2/Me', {
           status: 200,
+          headers: {"ETag": "18983098"},
           responseText: user_response
         });  
     return User.self(128807, 'tk_12345')
       .then(response => {
         //expect an user object back
     	expect(response).to.be.an.instanceof(User);
-
+    	expect(response.getETag()).to.equal("18983098")
         expect(response.getFamilyName()).to.equal('Coombs');
         expect(response.getGivenName()).to.equal('Karen');
         expect(response.getMiddleName()).to.equal('');
@@ -76,6 +79,7 @@ describe('Find user tests', () => {
 	  it('Get user by Access Token', () => {
 	      moxios.stubRequest('https://128807.share.worldcat.org/idaas/scim/v2/Users/1671151d-ac48-4b4d-a204-c858c3bf5d86', {
 	          status: 200,
+	          headers: {"ETag": "18983098"},
 	          responseText: single_user_response
 	        });  
 	    return User.find("1671151d-ac48-4b4d-a204-c858c3bf5d86", 128807, 'tk_12345')
@@ -83,6 +87,7 @@ describe('Find user tests', () => {
 	        //expect an user object back
 	    	expect(response).to.be.an.instanceof(User);
 
+	    	expect(response.getETag()).to.equal("18983098")
 	        expect(response.getFamilyName()).to.equal('Coombs');
 	        expect(response.getGivenName()).to.equal('Karen');
 	        expect(response.getMiddleName()).to.equal('');
@@ -103,7 +108,7 @@ describe('Find user tests', () => {
 	  });
 	});
 
-describe.only('Add user tests', () => {
+describe('Add user tests', () => {
 	  beforeEach(() => {
 		  moxios.install();
 	  });
@@ -112,10 +117,11 @@ describe.only('Add user tests', () => {
 		  moxios.uninstall();
 	  });
 
-	  it('Get user by Access Token', () => {
+	  it('Add user by Access Token', () => {
 	      moxios.stubOnce('POST', 'https://128807.share.worldcat.org/idaas/scim/v2/Users', {
 	          status: 200,
-	          responseText: single_user_response
+	          headers: {"ETag": "18983098"},
+	          responseText: create_user_response
 	        });  
 	    let fields = {
 	    		"familyName": "Smith (test)",
@@ -138,6 +144,49 @@ describe.only('Add user tests', () => {
 	    	expect(response).to.be.an.instanceof(User);
 
 	        expect(response.getFamilyName()).to.equal('Smith (test)');
+	        expect(response.getGivenName()).to.equal('Stacy');
+	        expect(response.getEmail()).to.equal("smiths@library.org");
+	        expect(response.getOclcPPID()).to.equal("3ac7346f-3b61-4aa9-bcea-e0179f0a3c77");
+	        expect(response.getInstitutionId()).to.equal("128807");
+	        expect(response.getOclcNamespace()).to.equal("urn:oclc:platform:128807");
+	        expect(response.getExternalID()).to.equal("330912");
+	        expect(response.getUserName()).to.equal("NOT SUPPORTED");
+	        expect(response.getEmails()).to.be.an("array");
+	        expect(response.getAddresses()).to.be.an("array");
+	        expect(response.getCircInfo().barcode).to.equal("330912");
+	        expect(response.getCorrelationInfo()).to.be.an("array");
+	        expect(response.getCorrelationInfo()[0].idAtSource).to.equal("smiths12");
+
+	      });
+	  });
+	});
+
+describe('Update user tests', () => {
+	  beforeEach(() => {
+		  moxios.install();
+	  });
+	  
+	  afterEach(() => {
+		  moxios.uninstall();
+	  });
+
+	  it('Updates user by Access Token', () => {
+	      moxios.stubOnce('PUT', 'https://128807.share.worldcat.org/idaas/scim/v2/Users/3ac7346f-3b61-4aa9-bcea-e0179f0a3c77', {
+	          status: 200,
+	          headers: {"ETag": "18983098"},
+	          responseText: update_user_response
+	        });  
+	    
+	    let user = new User(JSON.parse(create_user_response));
+	    user.doc.name.middleName = "Anne"
+	    
+	    return User.update(user, 128807, 'tk_12345')
+	      .then(response => {
+	        //expect an user object back
+	    	expect(response).to.be.an.instanceof(User);
+
+	        expect(response.getFamilyName()).to.equal('Smith (test)');
+	        expect(response.getMiddleName()).to.equal('Anne');
 	        expect(response.getGivenName()).to.equal('Stacy');
 	        expect(response.getEmail()).to.equal("smiths@library.org");
 	        expect(response.getOclcPPID()).to.equal("3ac7346f-3b61-4aa9-bcea-e0179f0a3c77");

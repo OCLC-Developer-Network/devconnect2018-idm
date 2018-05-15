@@ -5,8 +5,19 @@ const serviceUrl = '.share.worldcat.org/idaas/scim/v2';
 const UserError = require('../src/UserError');
 
 module.exports = class User {
-    constructor(doc) {
+    constructor(doc, eTag = null) {
 	    this.doc = doc;
+	    if (eTag){
+	    	this.eTag = eTag;
+	    }
+    }
+    
+    getETag(){
+    	return this.eTag;
+    }
+    
+    getID(){
+    	return this.doc.id;
     }
     
     getFamilyName() {
@@ -97,7 +108,7 @@ module.exports = class User {
             axios.get(url, config)
           		.then(response => {
           			// parse out the User
-        			resolve(new User(response.data));	    	
+        			resolve(new User(response.data, response.headers['etag']));	    	
           	    })
           		.catch (error => {
           			reject(new UserError(error));
@@ -172,12 +183,35 @@ module.exports = class User {
 			  
 		      axios.post(url, data, config)
 		    		.then(response => {
-		    			resolve(new User(response.data));	    	
+		    			resolve(new User(response.data, response.headers['etag']));	    	
 		    	    })
 		    		.catch (error => {
 		    			reject(new UserError(error));
 		    		});
 		});
+    }
+    
+    static update(user, institution, accessToken){
+    	let config = {
+  			  headers: {
+  				  'Authorization': 'Bearer ' + accessToken,
+  				  'User-Agent': 'node.js KAC client',
+  				  'Content-Type': 'application/scim+json',
+  				  'If-Match': user.getETag()
+  			  }
+  			};
+  	
+	  	let url = 'https://' + institution + serviceUrl + '/Users/' + user.getID();
+	      return new Promise(function (resolve, reject) {
+	          axios.put(url, JSON.stringify(user.doc), config)
+	        		.then(response => {
+	        			// parse out the User
+	      			resolve(new User(response.data, response.headers['etag']));	    	
+	        	    })
+	        		.catch (error => {
+	        			reject(new UserError(error));
+	        		});
+	      });
     }
     
     static self(institution, accessToken) {
@@ -189,10 +223,11 @@ module.exports = class User {
     			};
     	
     	let url = 'https://' + institution + serviceUrl + '/Me';
+    	console.log(url);
         return new Promise(function (resolve, reject) {
             axios.get(url, config)
           		.then(response => {
-        			resolve(new User(response.data));	    	
+        			resolve(new User(response.data, response.headers['etag']));	    	
           	    })
           		.catch (error => {
           			reject(new UserError(error));

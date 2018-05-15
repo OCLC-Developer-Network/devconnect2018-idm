@@ -10,7 +10,7 @@
   "userName": "NOT SUPPORTED",
   "name": {
     "familyName": "Smith (test)",
-    "middleName" : "",
+    "middleName": "Anne",
     "givenName": "Stacy"
   },
   "emails": [
