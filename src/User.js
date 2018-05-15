@@ -105,6 +105,81 @@ module.exports = class User {
         });
     }
     
+    static add(fields, institution, accessToken) {
+    	let config = {
+  			  headers: {
+  				  'Authorization': 'Bearer ' + accessToken,
+  				  'User-Agent': 'node.js KAC client',
+  				  'Content-Type': 'application/scim+json'
+  			  }
+  			};
+  	
+    	let url = 'https://' + institution + serviceUrl + '/Users';
+		return new Promise(function (resolve, reject) {
+			  let data = {
+			  "schemas": [
+				    "urn:ietf:params:scim:schemas:core:2.0:User",
+				    "urn:mace:oclc.org:eidm:schema:persona:correlationinfo:20180101",
+				    "urn:mace:oclc.org:eidm:schema:persona:persona:20180305",
+				    "urn:mace:oclc.org:eidm:schema:persona:wmscircpatroninfo:20180101",
+				    "urn:mace:oclc.org:eidm:schema:persona:wsillinfo:20180101"
+				  ],
+				  "name": {
+				    "familyName": fields['familyName'],
+				    "givenName": fields['givenName'],
+				    "middleName": fields['middleName'],
+				    "honorificPrefix": fields['honorificPrefix'],
+				    "honorificSuffix": fields['honorificSuffix']
+				  },
+				  "emails": [
+					    {
+					      "value": fields['email'],
+					      "type": "home",
+					      "primary": true
+					    }
+					  ],
+				  "addresses": [
+				    {
+				      "streetAddress": fields['streetAddress'],
+				      "locality": fields['locality'],
+				      "region": fields['region'],
+				      "postalCode": fields['postalCode'],
+				      "type": "home",
+				      "primary": false
+				    }
+				  ],
+				  "urn:mace:oclc.org:eidm:schema:persona:wmscircpatroninfo:20180101": {
+					    "circulationInfo": {
+					      "barcode": fields['barcode'],
+					      "borrowerCategory": fields['borrowerCategory'],
+					      "homeBranch": fields['homeBranch']
+					    }				  
+				},
+				"urn:mace:oclc.org:eidm:schema:persona:persona:20180305": {
+				    "institutionId": institution
+				}
+			  };
+			  
+			  if (fields['sourceSystem'] && fields['idAtSource']) {
+				  let correlationInfo = 
+							      {
+							        "sourceSystem": fields['sourceSystem'],
+							        "idAtSource": fields['idAtSource']
+							      };
+				  data["urn:mace:oclc.org:eidm:schema:persona:correlationinfo:20180101"]= {};
+				  data["urn:mace:oclc.org:eidm:schema:persona:correlationinfo:20180101"]["correlationInfo"] = [JSON.stringify(correlationInfo)];
+			  }
+			  
+		      axios.post(url, data, config)
+		    		.then(response => {
+		    			resolve(new User(response.data));	    	
+		    	    })
+		    		.catch (error => {
+		    			reject(new UserError(error));
+		    		});
+		});
+    }
+    
     static self(institution, accessToken) {
     	let config = {
     			  headers: {

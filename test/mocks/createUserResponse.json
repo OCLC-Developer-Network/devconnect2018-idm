@@ -1,0 +1,66 @@
+{
+  "schemas": [
+    "urn:ietf:params:scim:schemas:core:2.0:User",
+    "urn:mace:oclc.org:eidm:schema:persona:correlationinfo:20180101",
+    "urn:mace:oclc.org:eidm:schema:persona:persona:20180305",
+    "urn:mace:oclc.org:eidm:schema:persona:wmscircpatroninfo:20180101"
+  ],
+  "id": "3ac7346f-3b61-4aa9-bcea-e0179f0a3c77",
+  "externalId": "330912",
+  "userName": "NOT SUPPORTED",
+  "name": {
+    "familyName": "Smith (test)",
+    "givenName": "Stacy"
+  },
+  "emails": [
+    {
+      "value": "smiths@library.org",
+      "type": "home",
+      "primary": true
+    }
+  ],
+  "addresses": [
+    {
+      "streetAddress": "1142 Jasmine Ridge Court",
+      "locality": "Bangor",
+      "region": "ME",
+      "postalCode": "04915",
+      "type": "home",
+      "primary": true
+    }
+  ],
+  "urn:mace:oclc.org:eidm:schema:persona:correlationinfo:20180101": {
+    "correlationInfo": [
+      {
+        "sourceSystem": "urn:mytest:sourceSystem",
+        "idAtSource": "smiths12"
+      }
+    ]
+  },
+  "urn:mace:oclc.org:eidm:schema:persona:persona:20180305": {
+    "oclcPPID": "3ac7346f-3b61-4aa9-bcea-e0179f0a3c77",
+    "institutionId": "128807",
+    "oclcNamespace": "urn:oclc:platform:128807",
+    "oclcUsername": "coombsk@oclc.org",
+    "nameInfoCanSelfEdit": false
+  },
+  "urn:mace:oclc.org:eidm:schema:persona:wmscircpatroninfo:20180101": {
+    "circulationInfo": {
+      "barcode": "330912",
+      "borrowerCategory": "ADULT",
+      "homeBranch": "129479",
+      "circRegistrationDate": "2018-05-10",
+      "isCircBlocked": false,
+      "isCollectionExempt": false,
+      "isFineExempt": false,
+      "isVerified": true,
+      "storeCheckoutHistory": false
+    }
+  },
+  "meta": {
+    "resourceType": "User",
+    "created": "2018-05-10T20:39:09Z",
+    "location": "https://128807.share.worldcat-m1.dev.oclc.org/idaas/scim/v2/Users/3ac7346f-3b61-4aa9-bcea-e0179f0a3c77",
+    "version": "\"cd7ecefc417e4b4850c55270090c596e\""
+  }
+}

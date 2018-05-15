@@ -4,7 +4,7 @@ const fs = require('fs');
 
 const User = require('../src/User');
 const user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/userResponse.json')).toString();
-const single_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/readUserResponse.json')).toString();
+const single_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/createUserResponse.json')).toString();
 const search_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/searchResponse.json')).toString();
 
 describe('Create user test', () => {
@@ -103,7 +103,59 @@ describe('Find user tests', () => {
 	  });
 	});
 
-describe.only('Search user tests', () => {
+describe.only('Add user tests', () => {
+	  beforeEach(() => {
+		  moxios.install();
+	  });
+	  
+	  afterEach(() => {
+		  moxios.uninstall();
+	  });
+
+	  it('Get user by Access Token', () => {
+	      moxios.stubOnce('POST', 'https://128807.share.worldcat.org/idaas/scim/v2/Users', {
+	          status: 200,
+	          responseText: single_user_response
+	        });  
+	    let fields = {
+	    		"familyName": "Smith (test)",
+	    		"givenName": "Stacy",
+	    		"email": "smiths@library.org",
+	    		"streetAddress": "1142 Jasmine Ridge Court",
+	    		"locality": "Bangor",
+	    		"region": "ME",
+	    		"postalCode": "04915",
+	    		"barcode": "330912",
+	    		"borrowerCategory": "ADULT",
+	    		"homeBranch": "129479",
+	    		"sourceSystem": "urn:mytest:sourceSystem",
+	    		"idAtSource": "smiths12"
+	    		};
+	    
+	    return User.add(fields, 128807, 'tk_12345')
+	      .then(response => {
+	        //expect an user object back
+	    	expect(response).to.be.an.instanceof(User);
+
+	        expect(response.getFamilyName()).to.equal('Smith (test)');
+	        expect(response.getGivenName()).to.equal('Stacy');
+	        expect(response.getEmail()).to.equal("smiths@library.org");
+	        expect(response.getOclcPPID()).to.equal("3ac7346f-3b61-4aa9-bcea-e0179f0a3c77");
+	        expect(response.getInstitutionId()).to.equal("128807");
+	        expect(response.getOclcNamespace()).to.equal("urn:oclc:platform:128807");
+	        expect(response.getExternalID()).to.equal("330912");
+	        expect(response.getUserName()).to.equal("NOT SUPPORTED");
+	        expect(response.getEmails()).to.be.an("array");
+	        expect(response.getAddresses()).to.be.an("array");
+	        expect(response.getCircInfo().barcode).to.equal("330912");
+	        expect(response.getCorrelationInfo()).to.be.an("array");
+	        expect(response.getCorrelationInfo()[0].idAtSource).to.equal("smiths12");
+
+	      });
+	  });
+	});
+
+describe('Search user tests', () => {
 	  beforeEach(() => {
 		  moxios.install();
 	  });
