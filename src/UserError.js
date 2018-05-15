@@ -24,13 +24,15 @@ module.exports = class UserError {
         			this.message = this.doc.detail;
         			this.detail = null;
         		}
-        	} else {
+        	} else if (this.error.response.body) {
         		if (typeof this.error.response.body === 'string') {
         			this.doc = JSON.parse(this.error.response.body);
 	        	} else {
 	        		this.doc = this.error.response.body;
 	        	}
-        		this.message = this.doc.message;
+        		if (this.doc.message) {
+        			this.message = this.doc.message;
+        		}
         		if (this.doc.detail) {
         			this.detail = this.doc.detail;
         		} else {
