@@ -223,7 +223,6 @@ module.exports = class User {
     			};
     	
     	let url = 'https://' + institution + serviceUrl + '/Me';
-    	console.log(url);
         return new Promise(function (resolve, reject) {
             axios.get(url, config)
           		.then(response => {

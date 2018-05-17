@@ -30,25 +30,27 @@ function getAccessToken (req, res, next){
 	} else if (req.originalUrl === "/myaccount") {
 		cxt_institution = config['institution'];
 	} else {
-		cxt_institution = config['cxt_institution'];
+		cxt_institution = config['institution'];
 	}
 	
 	if (req.query['error']){
 		res.render('display-error', {error: req.query['error'], error_message: req.query['error_description'], error_detail: ""});
-	} else if (app.get('accessToken') && app.get('accessToken').getContextInstitutionID() !== cxt_institution){
-		// make a CCG request for a token with the right cxt_institution
-		wskey.getAccessTokenWithClientCredentials(config['institution'], cxt_institution, app.get('accessToken').getUser())
-        .then(function (accessToken) {
-        	app.set('accessToken', accessToken);
-            next();
-        })
-        .catch(function (err) {
-            //catch the error
-        	let error = new UserError(err);
-        	res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
-        })
 	} else if (app.get('accessToken') && app.get('accessToken').getAccessTokenString() && !app.get('accessToken').isExpired()){
-		next()
+		if (app.get('accessToken').getContextInstitutionID() !== cxt_institution){
+			// make a CCG request for a token with the right cxt_institution
+			wskey.getAccessTokenWithClientCredentials(config['institution'], cxt_institution, app.get('accessToken').getUser())
+	        .then(function (accessToken) {
+	        	app.set('accessToken', accessToken);
+	            next();
+	        })
+	        .catch(function (err) {
+	            //catch the error
+	        	let error = new UserError(err);
+	        	res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
+	        })
+		} else {
+			next()
+		}
 	} else if (app.get('accessToken') && !app.get('accessToken').refreshToken.isExpired()) {	
 		app.get('accessToken').refresh();
         next();
@@ -126,7 +128,7 @@ app.post('/user', (req, res) => {
 
 app.get('/user/:id', (req, res) => {
 	let id = req.params['id'];
-	User.find(id, config['cxt_institution'], app.get('accessToken').getAccessTokenString())
+	User.find(id, config['institution'], app.get('accessToken').getAccessTokenString())
 	.then(user => {
 		res.render('display-user', {user: user});
 	})
