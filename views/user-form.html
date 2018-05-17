@@ -1,0 +1,20 @@
+<%- include('header.html') -%>
+<h1>Add user</h1>
+<form action="create_user" method="POST">
+    <fieldset><legend>Name</legend> 
+    <label>First Name:</label> <input type="text" name="givenName" />
+    <label>Middle Name:</label> <input type="text" name="middleName" />
+    <label>Last Name:</label> <input type="text" name="familyName" />
+    </fieldset>
+    <p><label>Email:</label> <input type="text" name="email" /></p>
+    </p>
+    <fieldset><legend>Address</legend> 
+    <label>Street</label><input type="text" name="streetAddress" />
+    <label>City</label><input type="text" name="locality" />
+    <label>State</label><input type="text" name="region" />
+    <label>Zip Code</label><input type="text" name="postalCode" />
+    </fieldset>
+    </p>
+    <input type="submit" name="create" value="Create"/>
+</form>
+<%- include('footer.html') -%>
