@@ -19,11 +19,12 @@ describe("Unauthenticated routes", function(){
 	
   describe("#accessTokenError", function(){	  
 	  helper.nock('https://authn.sd00.worldcat.org/oauth2')
-      .post('/accessToken?grant_type=code&code=auth_12345&authenticatingInstitutionId=128807&contextInstitutionId=128807&redirect_uri=http://localhost:8000/myaccount')
+      .post('/accessToken?grant_type=authorization_code&code=auth_12345&authenticatingInstitutionId=128807&contextInstitutionId=128807&redirect_uri=http://localhost:8000/myaccount')
       .replyWithFile(401, __dirname + '/mocks/access_token_error.json', { 'Content-Type': 'application/json' });
 	  
 	  it('It should response the GET method', async() => {
 	    	let response = await request(app).get("/myaccount?code=auth_12345&state=%2Fmyaccount");
+	    	console.log(response.text);
 	    	let $ = cheerio.load(response.text);
             expect(response.statusCode).to.equal(200);
             expect($('div#content h1').text()).to.have.string("System Error");
