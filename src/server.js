@@ -36,7 +36,10 @@ function getAccessToken (req, res, next){
 	if (req.query['error']){
 		res.render('display-error', {error: req.query['error'], error_message: req.query['error_description'], error_detail: ""});
 	} else if (app.get('accessToken') && app.get('accessToken').getAccessTokenString() && !app.get('accessToken').isExpired()){
-		if (app.get('accessToken').getContextInstitutionID() !== cxt_institution){
+		if (app.get('accessToken').getContextInstitutionID() != cxt_institution){
+			console.log("ccg happening");
+			console.log(app.get('accessToken').getContextInstitutionID());
+			console.log(cxt_institution);
 			// make a CCG request for a token with the right cxt_institution
 			wskey.getAccessTokenWithClientCredentials(config['institution'], cxt_institution, app.get('accessToken').getUser())
 	        .then(function (accessToken) {
@@ -121,7 +124,6 @@ app.post('/user', (req, res) => {
 		res.render('display-user', {user: user});
 	})
 	.catch (error => {
-		console.log(error);
 		res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
 	})
 });
@@ -137,6 +139,62 @@ app.get('/user/:id', (req, res) => {
 	})
 });
 
+app.get('/create_user', (req, res) => {
+	res.render('user-form', {title: "Create User", action: "create_user", user: null});
+});
+
+app.post('/create_user', (req, res) => {
+	let fields = {
+		"familyName": req.body.familyName,
+		"givenName": req.body.givenName,
+		"email": req.body.email,
+		"streetAddress": req.body.streetAddress,
+		"locality": req.body.locality,
+		"region": req.body.region,
+		"postalCode": req.body.postalCode,
+		"barcode": req.body.familyName + "_" + req.body.givenName,
+		"borrowerCategory": "ADULT",
+		"homeBranch": "129479"
+		};
+	
+	User.add(fields, cxt_institution, app.get('accessToken').getAccessTokenString())
+	.then(user => {
+		res.render('display-user', {user: user});
+	})
+	.catch (error => {
+		res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
+	})
+});
+
+app.get('/update_user/:id', (req, res) => {
+	let id = req.params['id'];
+	User.find(id, config['institution'], app.get('accessToken').getAccessTokenString())
+	.then(user => {
+		app.set('user') = user;
+		res.render('user-form', {title: "Update User", action: "update_user", user: user});
+	})
+	.catch (error => {
+		res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
+	})
+});
+
+app.post('/create_user/:id', (req, res) => {
+	// figure out which fields need to be updated and update them
+	let user = app.get('user');
+	user.setGivenName(req.body.givenName);
+	user.setMiddleName(req.body.MiddleName);
+	user.setFamilyName(req.body.FamilyName);
+	user.setEmail(req.body.email);
+	user.setAddress(0, req.body.streetAddress, req.body.locality, req.body.region, req.body.postalCode);
+	
+	User.update(user, config['institution'], app.get('accessToken').getAccessTokenString())
+    	.then(user => {
+		res.render('user-form', {title: "Update User", action: "update_user", user: user});
+	})
+	.catch (error => {
+		res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
+	})
+});
 
 //Server
 module.exports = app;
