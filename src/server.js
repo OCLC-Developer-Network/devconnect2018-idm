@@ -157,7 +157,7 @@ app.post('/create_user', (req, res) => {
 		"homeBranch": "129479"
 		};
 	
-	User.add(fields, cxt_institution, app.get('accessToken').getAccessTokenString())
+	User.add(fields, config['institution'], app.get('accessToken').getAccessTokenString())
 	.then(user => {
 		res.render('display-user', {user: user});
 	})
