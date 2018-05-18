@@ -21,15 +21,27 @@ module.exports = class User {
     }
     
     getFamilyName() {
-    	return this.doc.name.familyName;
+    		return this.doc.name.familyName;
+    }
+    
+    setFamilyName(familyName){
+    		this.doc.name.familyName = familyName;
     }
     
     getGivenName() {
-    	return this.doc.name.givenName;
+    		return this.doc.name.givenName;
+    }
+    
+    setGivenName(givenName){
+    		this.doc.name.givenName = givenName;
     }
     
     getMiddleName() {
-    	return this.doc.name.middleName;
+    		return this.doc.name.middleName;
+    }
+    
+    setMiddleName(middleName){
+    		this.doc.name.middleName = middleName;
     }
     
     getEmail() {
@@ -40,6 +52,10 @@ module.exports = class User {
     		let email = this.getEmails()[0].value;
     		return email;
     	} 
+    }
+    
+    setEmail(email){
+    		this.getEmails()[0].value = email;
     }
     
     getOclcPPID() {
@@ -72,27 +88,34 @@ module.exports = class User {
     }
     
     getUserName(){
-    	return this.doc.userName;
+    		return this.doc.userName;
     }
     
     getEmails(){
-    	return this.doc.emails;
+    		return this.doc.emails;
     }
     
     getAddresses(){
-    	return this.doc.addresses;
+    		return this.doc.addresses;
+    }
+    
+    setAddress(number, streetAddress, locality, region, postalCode){
+    		this.doc.addresses[number].streetAddress = streetAddress;
+    		this.doc.addresses[number].locality = locality;
+    		this.doc.addresses[number].region = region;
+    		this.doc.addresses[number].postalCode = postalCode;
     }
     
     getCircInfo(){
-    	return this.doc["urn:mace:oclc.org:eidm:schema:persona:wmscircpatroninfo:20180101"].circulationInfo;
+    		return this.doc["urn:mace:oclc.org:eidm:schema:persona:wmscircpatroninfo:20180101"].circulationInfo;
     }
     
     getILLInfo(){
-    	return this.doc["urn:mace:oclc.org:eidm:schema:persona:wsillinfo:20180101"].illInfo;
+    		return this.doc["urn:mace:oclc.org:eidm:schema:persona:wsillinfo:20180101"].illInfo;
     }
     
     getCorrelationInfo(){
-    	return this.doc["urn:mace:oclc.org:eidm:schema:persona:correlationinfo:20180101"].correlationInfo;
+    		return this.doc["urn:mace:oclc.org:eidm:schema:persona:correlationinfo:20180101"].correlationInfo;
     }
 
     static find(id, institution, accessToken) {

@@ -75,7 +75,7 @@ describe('API Error tests', () => {
   });
 
   it('Returns a 401 Error from an HTTP request', () => {
-	  moxios.stubRequest('https://128807.share.worldcat.org/idaas/scim/v2/Me', {
+	  moxios.stubOnce('GET', 'https://128807.share.worldcat.org/idaas/scim/v2/Me', {
 		  status: 401,
 		  responseText: error_response
 	  });

@@ -35,7 +35,7 @@ describe('Create user test', () => {
 	  
 	});
 
-describe.skip('Get self user tests', () => {
+describe('Get self user tests', () => {
   beforeEach(() => {
 	  moxios.install();
   });
@@ -49,12 +49,13 @@ describe.skip('Get self user tests', () => {
           status: 200,
           headers: {"ETag": "18983098"},
           responseText: user_response
-        });  
+        });
+      
     return User.self(128807, 'tk_12345')
       .then(response => {
         //expect an user object back
-    	expect(response).to.be.an.instanceof(User);
-    	expect(response.getETag()).to.equal("18983098")
+    	  	expect(response).to.be.an.instanceof(User);
+    	  	expect(response.getETag()).to.equal("18983098")
         expect(response.getFamilyName()).to.equal('Coombs');
         expect(response.getGivenName()).to.equal('Karen');
         expect(response.getMiddleName()).to.equal('');
