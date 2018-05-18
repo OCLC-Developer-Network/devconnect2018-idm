@@ -104,8 +104,8 @@ app.post('/search', (req, res) => {
 	let cxt_institution = req.body.institution;
 	let query = req.body.query;
 	User.search("ExternalID", query, cxt_institution, app.get('accessToken').getAccessTokenString())
-	.then(user => {
-		res.render('display-user', {user: user});
+	.then(users => {
+		res.render('display-user', {user: users[0]});
 	})
 	.catch (error => {
 		res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
@@ -170,7 +170,7 @@ app.get('/update_user/:id', (req, res) => {
 	let id = req.params['id'];
 	User.find(id, config['institution'], app.get('accessToken').getAccessTokenString())
 	.then(user => {
-		app.set('user') = user;
+		app.set('user', user);
 		res.render('user-form', {title: "Update User", action: "update_user", user: user});
 	})
 	.catch (error => {

@@ -3,7 +3,7 @@ const expect = require('chai').expect;
 const cheerio = require('cheerio');
 let helper = require('./testHelper');
 
-describe.only("#user", function(){ 
+describe("#user", function(){ 
 	beforeEach(() => {
 		helper.moxios.install()
 	})

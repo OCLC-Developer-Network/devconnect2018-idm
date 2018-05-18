@@ -131,7 +131,7 @@ module.exports = class User {
             axios.get(url, config)
           		.then(response => {
           			// parse out the User
-        			resolve(new User(response.data, response.headers['etag']));	    	
+          			resolve(new User(response.data, response.headers['etag']));	    	
           	    })
           		.catch (error => {
           			reject(new UserError(error));
