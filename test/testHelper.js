@@ -12,4 +12,7 @@ exports.nock = require('nock');
 exports.user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/userResponse.json')).toString();
 exports.error_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/errorResponse.json')).toString();
 exports.access_token_error = fs.readFileSync(require('path').resolve(__dirname, './mocks/access_token_error.json')).toString();
-exports.app = app;
+exports.single_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/readUserResponse.json')).toString();
+exports.search_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/searchResponse.json')).toString();
+exports.create_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/createUserResponse.json')).toString();
+exports.update_user_response = fs.readFileSync(require('path').resolve(__dirname, './mocks/updateUserResponse.json')).toString();exports.app = app;
