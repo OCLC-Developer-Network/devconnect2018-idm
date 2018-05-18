@@ -1,20 +1,20 @@
 <%- include('header.html') -%>
-<h1>Add user</h1>
-<form action="create_user" method="POST">
+<h1><%= title%></h1>
+<form action="<%= action%>" method="POST">
     <fieldset><legend>Name</legend> 
-    <label>First Name:</label> <input type="text" name="givenName" />
-    <label>Middle Name:</label> <input type="text" name="middleName" />
-    <label>Last Name:</label> <input type="text" name="familyName" />
+    <label>First Name:</label> <input type="text" name="givenName" value ="<%= user ? user.getGivenName() : '' %>" />
+    <label>Middle Name:</label> <input type="text" name="middleName" value="<%= user ? user.getMiddleName() : '' %>" />
+    <label>Last Name:</label> <input type="text" name="familyName" value="<%= user ? user.getFamilyName() : '' %>" />
     </fieldset>
-    <p><label>Email:</label> <input type="text" name="email" /></p>
+    <p><label>Email:</label> <input type="text" name="email" value="<%= user ? user.getEmail() : '' %>" /></p>
     </p>
     <fieldset><legend>Address</legend> 
-    <label>Street</label><input type="text" name="streetAddress" />
-    <label>City</label><input type="text" name="locality" />
-    <label>State</label><input type="text" name="region" />
-    <label>Zip Code</label><input type="text" name="postalCode" />
+    <label>Street</label><input type="text" name="streetAddress" value="<%= user ? user.getAddresses()[0].streetAddress : '' %>"/>
+    <label>City</label><input type="text" name="locality" value="<%= user ? user.getAddresses()[0].locality : '' %>"/>
+    <label>State</label><input type="text" name="region" value="<%= user ? user.getAddresses()[0].region : '' %>"/>
+    <label>Zip Code</label><input type="text" name="postalCode" value="<%= user ? user.getAddresses()[0].postalCode : '' %>" />
     </fieldset>
     </p>
-    <input type="submit" name="create" value="Create"/>
+    <input type="submit" name="<%=action%>" value="Submit"/>
 </form>
 <%- include('footer.html') -%>

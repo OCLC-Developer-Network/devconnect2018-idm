@@ -3,7 +3,7 @@ const expect = require('chai').expect;
 const cheerio = require('cheerio');
 let helper = require('./testHelper');
 
-describe.only("#search", function(){ 
+describe("#search", function(){ 
 	beforeEach(() => {
 		helper.moxios.install()
 	})
@@ -13,7 +13,7 @@ describe.only("#search", function(){
 	})
 
 	it('It should response the GET method', async() => {
-		let response = await request(helper.app).get("/Search");
+		let response = await request(helper.app).get("/search");
 		let $ = cheerio.load(response.text);
 		expect(response.statusCode).to.equal(200)
 		expect($('div#content h1').text()).to.have.string("Search by External ID");
