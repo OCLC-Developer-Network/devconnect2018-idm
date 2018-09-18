@@ -58,5 +58,5 @@ $ npm tests
 
 ## How this was built
 
-For a step by step tutorial on this application see the [tutorial section](https://github.com/OCLC-Developer-Network/devnet2018-idm/tree/master/tutorial)
+For a step by step tutorial on this application see the [tutorial section](tutorial/prepare.md)
 
