@@ -100,7 +100,7 @@ app.get('/search', (req, res) => {
 app.post('/search', (req, res) => {
 	let cxt_institution = req.body.institution;
 	let query = req.body.query;
-	User.search("ExternalID", query, cxt_institution, app.get('accessToken').getAccessTokenString())
+	User.search("External_ID", query, cxt_institution, app.get('accessToken').getAccessTokenString())
 	.then(users => {
 		res.render('display-user', {user: users[0]});
 	})
