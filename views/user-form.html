@@ -8,6 +8,7 @@
     </fieldset>
     <p><label>Email:</label> <input type="text" name="email" value="<%= user ? user.getEmail() : '' %>" /></p>
     </p>
+    <% if (action == "create_user" || user.getAddresses()) {%>
     <fieldset><legend>Address</legend> 
     <label>Street</label><input type="text" name="streetAddress" value="<%= user ? user.getAddresses()[0].streetAddress : '' %>"/>
     <label>City</label><input type="text" name="locality" value="<%= user ? user.getAddresses()[0].locality : '' %>"/>
@@ -15,6 +16,7 @@
     <label>Zip Code</label><input type="text" name="postalCode" value="<%= user ? user.getAddresses()[0].postalCode : '' %>" />
     </fieldset>
     </p>
+    <%}%>
     <input type="submit" name="<%=action%>" value="Submit"/>
 </form>
 <%- include('footer.html') -%>
