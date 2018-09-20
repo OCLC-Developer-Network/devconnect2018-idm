@@ -37,9 +37,6 @@ function getAccessToken (req, res, next){
 		res.render('display-error', {error: req.query['error'], error_message: req.query['error_description'], error_detail: ""});
 	} else if (app.get('accessToken') && app.get('accessToken').getAccessTokenString() && !app.get('accessToken').isExpired()){
 		if (app.get('accessToken').getContextInstitutionID() != cxt_institution){
-			console.log("ccg happening");
-			console.log(app.get('accessToken').getContextInstitutionID());
-			console.log(cxt_institution);
 			// make a CCG request for a token with the right cxt_institution
 			wskey.getAccessTokenWithClientCredentials(config['institution'], cxt_institution, app.get('accessToken').getUser())
 	        .then(function (accessToken) {
