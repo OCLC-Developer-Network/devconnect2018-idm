@@ -175,7 +175,7 @@ app.get('/update_user/:id', (req, res) => {
 	})
 });
 
-app.post('/create_user/:id', (req, res) => {
+app.post('/update_user/:id', (req, res) => {
 	// figure out which fields need to be updated and update them
 	let user = app.get('user');
 	user.setGivenName(req.body.givenName);
