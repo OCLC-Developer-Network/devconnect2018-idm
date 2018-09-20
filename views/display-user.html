@@ -3,6 +3,7 @@
 <div id="user">
 <p id="name">Name: <%= user.getGivenName()%> <%= user.getFamilyName()%></p>
 <p id="email">Email: <%= user.getEmail()%></p>
+<p id="barcode">Barcode: <%= user.getCircInfo().barcode%></p>
 <p id="id">ID/Namespace: <%= user.getOclcPPID()%> - <%= user.getOclcNamespace()%></p>
 <p id="institution">Institution: <%= user.getInstitutionId()%></p>
 <%- include('footer.html') -%>
