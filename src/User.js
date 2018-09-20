@@ -99,11 +99,43 @@ module.exports = class User {
     		return this.doc.addresses;
     }
     
-    setAddress(number, streetAddress, locality, region, postalCode){
-    		this.doc.addresses[number].streetAddress = streetAddress;
-    		this.doc.addresses[number].locality = locality;
-    		this.doc.addresses[number].region = region;
-    		this.doc.addresses[number].postalCode = postalCode;
+    addAddress(streetAddress, locality, region, postalCode, type, primary = false){
+		let newAddress = {
+				"streetAddress": streetAddress, 
+				"locality": locality, 
+				"region": region,
+				"postalCode": postalCode,
+				"type": type,
+				"primary": primary
+			}
+    		this.doc.addresses.push(newAddress);
+    }
+    
+    setAddress(number, fields){
+    		if (fields['streetAddress']){
+    			this.doc.addresses[number].streetAddress = fields['streetAddress'];
+    		}
+    		if (fields['locality']) {
+    			this.doc.addresses[number].locality = fields['locality'];
+    		}
+    		if (fields['region']){
+    			this.doc.addresses[number].region = fields['region'];
+    		}
+    		if (fields['postalCode']) {
+    			this.doc.addresses[number].postalCode = fields['postalCode'];
+    		}
+    		
+    		if (fields['type']) {
+    			this.doc.addresses[number].type = fields['type'];
+    		}
+    		
+    		if (fields['primary']) {
+    			this.doc.addresses[number].primary = fields['primary'];
+    		}
+    }
+    
+    setPassword(password){
+    		this.doc["urn:mace:oclc.org:eidm:schema:persona:persona:20180305"].oclcPassword = password;
     }
     
     getCircInfo(){
@@ -265,11 +297,11 @@ module.exports = class User {
     				  'Content-Type': 'application/scim+json',
     			  }
     			};
-    	let filter = index + " eq " + term
+    	let filter = index + ' eq "' + term + '"'
     	let data = {
-    		     "schemas": ["urn:ietf:params:scim:api:messages:2.0:SearchRequest"],
-    		     "filter": filter
-    		   }    	
+    			"schemas": ["urn:ietf:params:scim:api:messages:2.0:SearchRequest"],
+    			"filter": filter    	
+    	}
     	let url = 'https://' + institution + serviceUrl + '/Users/.search';
         return new Promise(function (resolve, reject) {
             axios.post(url, data, config)
@@ -281,6 +313,7 @@ module.exports = class User {
         			resolve(results);	    	
           	    })
           		.catch (error => {
+          			console.log(error.response.data)
           			reject(new UserError(error));
           		});
         });

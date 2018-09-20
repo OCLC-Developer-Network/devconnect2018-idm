@@ -33,6 +33,25 @@ describe('Create user test', () => {
         expect(my_user.getOclcNamespace()).to.equal("urn:oclc:platform:127950");
 	  });
 	  
+	  it('Has functioning setters', () => {
+		my_user.setFamilyName("Smith")
+        expect(my_user.getFamilyName()).to.equal('Smith');
+		my_user.setGivenName("Liam")
+        expect(my_user.getGivenName()).to.equal('Liam');
+		my_user.setMiddleName("Declan")
+        expect(my_user.getMiddleName()).to.equal('Declan');
+		my_user.setEmail("smithl@oclc.org")
+		expect(my_user.getEmail()).to.equal("smithl@oclc.org");
+        
+		my_user.addAddress("1142 Jasmine Ridge Court", "Bangor", "ME","04915");
+		expect(my_user.getAddresses()).to.be.an("array");
+		
+		my_user.setAddress(0, {'postalCode': "04949"});
+		
+		expect(my_user.getAddresses()[0].postalCode).to.equal("04849")
+        
+	  });
+	  
 	});
 
 describe('Get self user tests', () => {
