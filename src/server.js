@@ -1,5 +1,6 @@
 "use strict";
 const express = require('express');
+const session = require('express-session')
 const bodyParser = require('body-parser');
 const nodeauth = require("nodeauth");
 
@@ -22,8 +23,10 @@ app.set('views', 'views');
  
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static('public'));
+app.use(session({secret: 'Nx^P6u', cookie: {secure: false, maxAge: 60000}, resave: false, saveUninitialized: false}));
 
 function getAccessToken (req, res, next){
+	// this is messed up because a session can't store an object
 	let cxt_institution;
 	if (req.body.institution){
 		cxt_institution = req.body.institution;
@@ -35,12 +38,12 @@ function getAccessToken (req, res, next){
 	
 	if (req.query['error']){
 		res.render('display-error', {error: req.query['error'], error_message: req.query['error_description'], error_detail: ""});
-	} else if (app.get('accessToken') && app.get('accessToken').getAccessTokenString() && !app.get('accessToken').isExpired()){
-		if (app.get('accessToken').getContextInstitutionID() != cxt_institution){
+	} else if (req.session.accessToken && req.session.accessToken.accessTokenString){
+		if (req.session.accessToken.contextInstitutionId != cxt_institution){
 			// make a CCG request for a token with the right cxt_institution
-			wskey.getAccessTokenWithClientCredentials(config['institution'], cxt_institution, app.get('accessToken').getUser())
+			wskey.getAccessTokenWithClientCredentials(config['institution'], cxt_institution, req.session.accessToken.user)
 	        .then(function (accessToken) {
-	        	app.set('accessToken', accessToken);
+	        	req.session.accessToken = accessToken;
 	            next();
 	        })
 	        .catch(function (err) {
@@ -51,14 +54,14 @@ function getAccessToken (req, res, next){
 		} else {
 			next()
 		}
-	} else if (app.get('accessToken') && !app.get('accessToken').refreshToken.isExpired()) {	
-		app.get('accessToken').refresh();
+	} else if (req.session.accessToken && req.session.accessToken.refreshToken) {	
+		// need to figure out how to use a refresh token when don't have an Access Token object anymore
         next();
-	} else if (req.query['code']) {	
+	} else if (req.query['code']) {
 		// request an Access Token
 		wskey.getAccessTokenWithAuthCode(req.query['code'], config['institution'], cxt_institution)
 	        .then(function (accessToken) {
-	        	app.set('accessToken', accessToken);
+	        	req.session.accessToken = accessToken;
 	            //redirect to the state parameter
 	            let state = decodeURIComponent(req.query['state']);
 	            res.redirect(state);
@@ -68,7 +71,7 @@ function getAccessToken (req, res, next){
 	        	let error = new UserError(err);
 	        	res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
 	        })
-	}else {	
+	}else {
 		// redirect to login + state parameter
 		let loginURL = wskey.getLoginURL(config['institution'], cxt_institution, encodeURIComponent(req.originalUrl));
 		res.redirect(loginURL);
@@ -84,7 +87,7 @@ app.get('/', (req, res) => {
 });
  
 app.get('/myaccount', (req, res) => {   
-	User.self(config['institution'], app.get('accessToken').getAccessTokenString())
+	User.self(config['institution'], req.session.accessToken.getAccessTokenString())
 	.then(user => {
 		res.render('display-my-account', {user: user});
 	})
@@ -100,7 +103,7 @@ app.get('/search', (req, res) => {
 app.post('/search', (req, res) => {
 	let cxt_institution = req.body.institution;
 	let query = req.body.query;
-	User.search("External_ID", query, cxt_institution, app.get('accessToken').getAccessTokenString())
+	User.search("External_ID", query, cxt_institution, req.session.accessToken.getAccessTokenString())
 	.then(users => {
 		res.render('display-user', {user: users[0]});
 	})
@@ -116,7 +119,7 @@ app.get('/user', (req, res) => {
 app.post('/user', (req, res) => {
 	let cxt_institution = req.body.institution;
 	let id = req.body.id;
-	User.find(id, cxt_institution, app.get('accessToken').getAccessTokenString())
+	User.find(id, cxt_institution, req.session.accessToken.getAccessTokenString())
 	.then(user => {
 		res.render('display-user', {user: user});
 	})
@@ -127,7 +130,7 @@ app.post('/user', (req, res) => {
 
 app.get('/user/:id', (req, res) => {
 	let id = req.params['id'];
-	User.find(id, config['institution'], app.get('accessToken').getAccessTokenString())
+	User.find(id, config['institution'], req.session.accessToken.getAccessTokenString())
 	.then(user => {
 		res.render('display-user', {user: user});
 	})
@@ -154,7 +157,7 @@ app.post('/create_user', (req, res) => {
 		"homeBranch": "129479"
 		};
 	
-	User.add(fields, config['institution'], app.get('accessToken').getAccessTokenString())
+	User.add(fields, config['institution'], req.session.accessToken.getAccessTokenString())
 	.then(user => {
 		res.render('display-user', {user: user});
 	})
@@ -165,7 +168,7 @@ app.post('/create_user', (req, res) => {
 
 app.get('/update_user/:id', (req, res) => {
 	let id = req.params['id'];
-	User.find(id, config['institution'], app.get('accessToken').getAccessTokenString())
+	User.find(id, config['institution'], req.session.accessToken.getAccessTokenString())
 	.then(user => {
 		app.set('user', user);
 		res.render('user-form', {title: "Update User", action: "update_user", user: user});
@@ -184,7 +187,7 @@ app.post('/update_user/:id', (req, res) => {
 	user.setEmail(req.body.email);
 	user.setAddress(0, req.body.streetAddress, req.body.locality, req.body.region, req.body.postalCode);
 	
-	User.update(user, config['institution'], app.get('accessToken').getAccessTokenString())
+	User.update(user, config['institution'], req.session.accessToken.getAccessTokenString())
     	.then(user => {
 		res.render('user-form', {title: "Update User", action: "update_user", user: user});
 	})
