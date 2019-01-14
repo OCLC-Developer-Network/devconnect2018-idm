@@ -87,7 +87,7 @@ app.get('/', (req, res) => {
 });
  
 app.get('/myaccount', (req, res) => {   
-	User.self(config['institution'], req.session.accessToken.getAccessTokenString())
+	User.self(config['institution'], req.session.accessToken.accessTokenString)
 	.then(user => {
 		res.render('display-my-account', {user: user});
 	})
@@ -103,7 +103,7 @@ app.get('/search', (req, res) => {
 app.post('/search', (req, res) => {
 	let cxt_institution = req.body.institution;
 	let query = req.body.query;
-	User.search("External_ID", query, cxt_institution, req.session.accessToken.getAccessTokenString())
+	User.search("External_ID", query, cxt_institution, req.session.accessToken.accessTokenString)
 	.then(users => {
 		res.render('display-user', {user: users[0]});
 	})
@@ -119,7 +119,7 @@ app.get('/user', (req, res) => {
 app.post('/user', (req, res) => {
 	let cxt_institution = req.body.institution;
 	let id = req.body.id;
-	User.find(id, cxt_institution, req.session.accessToken.getAccessTokenString())
+	User.find(id, cxt_institution, req.session.accessToken.accessTokenString)
 	.then(user => {
 		res.render('display-user', {user: user});
 	})
@@ -130,7 +130,7 @@ app.post('/user', (req, res) => {
 
 app.get('/user/:id', (req, res) => {
 	let id = req.params['id'];
-	User.find(id, config['institution'], req.session.accessToken.getAccessTokenString())
+	User.find(id, config['institution'], req.session.accessToken.accessTokenString)
 	.then(user => {
 		res.render('display-user', {user: user});
 	})
@@ -157,7 +157,7 @@ app.post('/create_user', (req, res) => {
 		"homeBranch": "129479"
 		};
 	
-	User.add(fields, config['institution'], req.session.accessToken.getAccessTokenString())
+	User.add(fields, config['institution'], req.session.accessToken.accessTokenString)
 	.then(user => {
 		res.render('display-user', {user: user});
 	})
@@ -168,7 +168,7 @@ app.post('/create_user', (req, res) => {
 
 app.get('/update_user/:id', (req, res) => {
 	let id = req.params['id'];
-	User.find(id, config['institution'], req.session.accessToken.getAccessTokenString())
+	User.find(id, config['institution'], req.session.accessToken.accessTokenString)
 	.then(user => {
 		app.set('user', user);
 		res.render('user-form', {title: "Update User", action: "update_user", user: user});
@@ -187,7 +187,7 @@ app.post('/update_user/:id', (req, res) => {
 	user.setEmail(req.body.email);
 	user.setAddress(0, req.body.streetAddress, req.body.locality, req.body.region, req.body.postalCode);
 	
-	User.update(user, config['institution'], req.session.accessToken.getAccessTokenString())
+	User.update(user, config['institution'], req.session.accessToken.accessTokenString)
     	.then(user => {
 		res.render('user-form', {title: "Update User", action: "update_user", user: user});
 	})
