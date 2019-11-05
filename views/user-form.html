@@ -1,6 +1,6 @@
 <%- include('header.html') -%>
 <h1><%= title%></h1>
-<form action="<%= action%>" method="POST">
+<form action="/<%= action%>" method="POST">
     <fieldset><legend>Name</legend> 
     <label>First Name:</label> <input type="text" name="givenName" value ="<%= user ? user.getGivenName() : '' %>" />
     <label>Middle Name:</label> <input type="text" name="middleName" value="<%= user ? user.getMiddleName() : '' %>" />
