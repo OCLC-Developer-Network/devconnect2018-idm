@@ -12,7 +12,7 @@ const update_user_response = fs.readFileSync(require('path').resolve(__dirname, 
 describe('Create user test', () => {
 	let my_user;
 	  before(() => {
-  			my_user = new User(JSON.parse(user_response));
+  			my_user = new User(JSON.parse(single_user_response));
 		  });
 	  
 	  it('Creates an User object', () => {
@@ -28,9 +28,10 @@ describe('Create user test', () => {
         expect(my_user.getGivenName()).to.equal('Karen');
         expect(my_user.getMiddleName()).to.equal('');
         expect(my_user.getEmail()).to.equal("coombsk@oclc.org");
-        expect(my_user.getOclcPPID()).to.equal("412d947b-144e-4ea4-97f5-fd6593315f17");
+        expect(my_user.getOclcPPID()).to.equal("1671151d-ac48-4b4d-a204-c858c3bf5d86");
         expect(my_user.getInstitutionId()).to.equal("128807");
-        expect(my_user.getOclcNamespace()).to.equal("urn:oclc:platform:127950");
+        expect(my_user.getOclcNamespace()).to.equal("urn:oclc:platform:128807");
+        expect(my_user.getEmails().length).to.equal(1);
 	  });
 	  
 	  it('Has functioning setters', () => {
@@ -40,13 +41,18 @@ describe('Create user test', () => {
         expect(my_user.getGivenName()).to.equal('Liam');
 		my_user.setMiddleName("Declan")
         expect(my_user.getMiddleName()).to.equal('Declan');
-		my_user.setEmail("smithl@oclc.org")
+
+		my_user.addEmail("smithl@oclc.org", "home", true)
+		expect(my_user.getEmails()).to.be.an("array");
+		expect(my_user.getEmails()[1].value).to.equal("smithl@oclc.org")
 		expect(my_user.getEmail()).to.equal("smithl@oclc.org");
+		
+		my_user.setEmail(0, {"email": "", "type": "office", "primary": false});
         
 		my_user.addAddress("1142 Jasmine Ridge Court", "Bangor", "ME","04915");
 		expect(my_user.getAddresses()).to.be.an("array");
 		
-		my_user.setAddress(0, {'postalCode': "04949"});
+		my_user.setAddress(0, {'postalCode': "04849"});
 		
 		expect(my_user.getAddresses()[0].postalCode).to.equal("04849")
         

@@ -45,17 +45,45 @@ module.exports = class User {
     }
     
     getEmail() {
-    	if (this.doc.email){
-    		let email =  this.doc.email;
-    		return email;
-    	} else if (this.getEmails().length === 1) {
-    		let email = this.getEmails()[0].value;
-    		return email;
-    	} 
+    	let email = "";
+    	if (this.doc.email === undefined) {
+    		email = "";    	
+    		if (this.doc.emails === undefined) {
+    			email = ""; 
+    		} else if (this.doc.emails.length > 1) {
+	    		let primaryEmail = this.getEmails().filter(email => email.primary === true);
+	    		email = primaryEmail[0].value;
+	    	} else {
+	    		email = this.doc.emails[0].value;
+	    	}
+    	} else {
+    		email = this.doc.email;
+    	}
+    	
+    	return email;
     }
     
-    setEmail(email){
-    		this.getEmails()[0].value = email;
+    addEmail(email, type, primary = false){
+    	if (this.doc.emails === undefined) {
+    		this.doc.emails = [];
+    	}
+		let newEmail = {
+			"value": email,
+			"type": type,
+			"primary": primary
+		}
+		this.doc.emails.push(newEmail);
+    	
+    }
+    
+    setEmail(number, fields){
+    	this.doc.emails[number].value = fields['email'];
+    	if (fields['type']) {
+    		this.doc.emails[number].type = fields['type'];
+    	}
+    	if (fields['primary']) {
+    		this.doc.emails[number].primary = fields['primary'];
+    	}
     }
     
     getOclcPPID() {
@@ -92,7 +120,12 @@ module.exports = class User {
     }
     
     getEmails(){
+    	if (this.doc.emails === undefined){
+    		let emails = [];
+    		return emails;
+    	} else {
     		return this.doc.emails;
+    	}
     }
     
     getAddresses(){
@@ -100,6 +133,9 @@ module.exports = class User {
     }
     
     addAddress(streetAddress, locality, region, postalCode, type, primary = false){
+    	if (this.doc.addresses === undefined) {
+    		this.doc.addresses = [];
+    	}
 		let newAddress = {
 				"streetAddress": streetAddress, 
 				"locality": locality, 
@@ -108,7 +144,7 @@ module.exports = class User {
 				"type": type,
 				"primary": primary
 			}
-    		this.doc.addresses.push(newAddress);
+    	this.doc.addresses.push(newAddress);
     }
     
     setAddress(number, fields){
