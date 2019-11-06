@@ -24,7 +24,6 @@ describe("Unauthenticated routes", function(){
 	  
 	  it('It should response the GET method', async() => {
 	    	let response = await request(app).get("/myaccount?code=auth_12345&state=%2Fmyaccount");
-	    	console.log(response.text);
 	    	let $ = cheerio.load(response.text);
             expect(response.statusCode).to.equal(200);
             expect($('div#content h1').text()).to.have.string("System Error");

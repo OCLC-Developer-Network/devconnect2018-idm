@@ -147,6 +147,7 @@ app.post('/create_user', (req, res) => {
 	let fields = {
 		"familyName": req.body.familyName,
 		"givenName": req.body.givenName,
+		"middleName": req.body.middleName,
 		"email": req.body.email,
 		"streetAddress": req.body.streetAddress,
 		"locality": req.body.locality,
@@ -171,7 +172,7 @@ app.get('/update_user/:id', (req, res) => {
 	User.find(id, config['institution'], req.session.accessToken.accessTokenString)
 	.then(user => {
 		app.set('user', user);
-		res.render('user-form', {title: "Update User", action: "update_user", user: user});
+		res.render('user-form', {title: "Update User", action: "update_user/" + id, user: user});
 	})
 	.catch (error => {
 		res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
@@ -180,18 +181,20 @@ app.get('/update_user/:id', (req, res) => {
 
 app.post('/update_user/:id', (req, res) => {
 	// figure out which fields need to be updated and update them
+	let id = req.params['id'];
 	let user = app.get('user');
 	user.setGivenName(req.body.givenName);
-	user.setMiddleName(req.body.MiddleName);
-	user.setFamilyName(req.body.FamilyName);
-	user.setEmail(req.body.email);
-	user.setAddress(0, req.body.streetAddress, req.body.locality, req.body.region, req.body.postalCode);
+	user.setMiddleName(req.body.middleName);
+	user.setFamilyName(req.body.familyName);
+	user.setEmail(0, {"value": req.body.email});
+	user.setAddress(0, {"streetAddress": req.body.streetAddress, "locality": req.body.locality, "region": req.body.region, 'postalCode': req.body.postalCode});
 	
 	User.update(user, config['institution'], req.session.accessToken.accessTokenString)
     	.then(user => {
-		res.render('user-form', {title: "Update User", action: "update_user", user: user});
+		res.render('user-form', {title: "Update User", action: "update_user/" + id, user: user});
 	})
 	.catch (error => {
+		console.log(error);
 		res.render('display-error', {error: error.getCode(), error_message: error.getMessage(), error_detail: error.getDetail()});
 	})
 });
