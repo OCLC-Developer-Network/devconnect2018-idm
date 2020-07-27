@@ -53,7 +53,7 @@ Point your web browser at the localhost address where these instructions will in
 From the command line run
 
 ```bash
-$ npm tests
+$ npm test
 ```
 
 ## How this was built
